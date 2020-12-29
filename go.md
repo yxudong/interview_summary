@@ -44,3 +44,7 @@
 
 	Golang 1.7 之前的写屏障使用的经典的 Dijkstra-style insertion write barrier， STW 的主要耗时就在 stack re-scan 的过程。
 	自 1.8 之后采用一种混合的写屏障方式 （Yuasa-style deletion write barrier 和 Dijkstra-style insertion write barrier）来避免 re-scan
+
+**5. Go 的垃圾回收机制****
+	goroutine 的实现方式目前主要用GPM模型来描述。
+	GPM其中G是指Goroutine,P是指Process(逻辑调度器）,M是指Machine
