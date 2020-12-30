@@ -485,7 +485,7 @@
     5. master 发送缓存中的写命令到 slave，slave 执行
 
 <div style="text-align:center">
-    <img src="https://yxd-github.oss-cn-beijing.aliyuncs.com/interview_summary%20-%20Redis%201.webp" width="500">
+    <img src="https://yxd-github.oss-cn-beijing.aliyuncs.com/interview_summary%20-%20Redis%201.jpg" width="500">
 </div>
 
     上面写的命令是 sync，但是在 Redis 2.8 版本之后已经使用 psync 来替代 sync 了，
@@ -526,7 +526,7 @@
        客户端和哨兵之间的事件通知通过哨兵自身的 pub/sub 功能实现
 
 <div style="text-align:center">
-    <img src="https://yxd-github.oss-cn-beijing.aliyuncs.com/interview_summary%20-%20Redis%202.webp" width="500">
+    <img src="https://yxd-github.oss-cn-beijing.aliyuncs.com/interview_summary%20-%20Redis%202.jpg" width="500">
 </div>
 
     优缺点：
