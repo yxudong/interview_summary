@@ -484,11 +484,9 @@
     4. bgsave 执行完毕之后，发送 RDB 文件到 slave，slave 执行
     5. master 发送缓存中的写命令到 slave，slave 执行
 
-<br>
 <div style="text-align:center">
     <img src="https://yxd-github.oss-cn-beijing.aliyuncs.com/interview_summary%20-%20Redis%201.jpg" width="500">
 </div>
-<br>
 
     上面写的命令是 sync，但是在 Redis 2.8 版本之后已经使用 psync 来替代 sync 了，
     原因是 sync 命令非常消耗系统资源，而 psync 的效率更高（增量同步）。
