@@ -1,11 +1,11 @@
-**1. Redis 和 Memecache 的区别是什么？**
+#### Redis 和 Memecache 的区别是什么？
 
     1. Redis 不仅仅支持简单的 k/v 类型的数据，同时还提供 list，set，zset，hash 等数据结构的存储。Memecache 支持简单的数据类型 String
     2. Redis 支持数据的持久化，可以将内存中的数据保持在磁盘中，重启的时候可以再次加载进行使用,而 Memecache 把数据全部存在内存之中
     3. Memcached 没有原生的集群模式，需要依靠客户端来实现往集群中分片写入数据；但是 Redis 目前是原生支持 cluster 模式的
     4. Memcached 是多线程，非阻塞 IO 复用的网络模型；Redis 使用单线程的多路 IO 复用模型
 
-**2. Redis 常见数据结构以及使用场景分析？**
+#### Redis 常见数据结构以及使用场景分析？
 
     1. String 字符串
        字符串类型是 Redis 最基础的数据结构，首先键都是字符串类型，而且其他几种数据结构都是在字符串类型基础上构建的。
@@ -28,7 +28,7 @@
     2. HyperLogLog 应用于基数统计
     3. GEO 应用于地理位置计算
 
-**3. Redis String 的实现原理**
+#### Redis String 的实现原理
 
     Redis 内部 String 类型采用 SDS（simple dynamic string）表示
     ```
@@ -50,7 +50,7 @@
         3. 可以高效地执行追加操作（append） // 通过预分配空间，free 字段
         4. 二进制安全 // 不以 \0 做为结尾标识
 
-**4. Redis List 的实现原理**
+#### Redis List 的实现原理
 
     在 Redis 3.2 之前，List 底层采用了 ZipList 和 LinkedList 实现的，在 3.2 之后，List 底层采用了 QuickList。
     Redis 3.2 之前，初始化的 List 使用的 ZipList，当以下两个条件任意一个不满足时，则会被转换成 LinkedList：
