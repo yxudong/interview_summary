@@ -581,4 +581,4 @@
 
 #### Redis 中，sentinel和 cluster 的区别和适用场景是什么？
 
-    哨兵是解决了 Redis 的高可用，而 cluster 则是解决了 Redis 的高并发
+    哨兵是解决了 Redis 的高可用，而 cluster 则是解决了 Redis 的高并发。
