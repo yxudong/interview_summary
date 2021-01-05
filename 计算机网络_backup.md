@@ -79,15 +79,15 @@
 #### HTTP 报文结构
 
 <p align='center'>
-<img src='../images/请求报文.png'>
+<img src='./images/请求报文.png'>
 </p>
 
 <p align='center'>
-<img src='../images/响应报文.png'>
+<img src='./images/响应报文.png'>
 </p>
 
 <p align='center'>
-<img src='../images/报文实例.png'>
+<img src='./images/报文实例.png'>
 </p>
 
 #### HTTP 并行连接、持久连接、管道化连接
@@ -157,7 +157,7 @@
               无论如何，Client 需要对返回结果再次发起请求，知道获得最终结果。
 
 <p align='center'>
-    <img src='../images/DNS 递归查询和迭代查询.png'>
+    <img src='./images/DNS 递归查询和迭代查询.png'>
 </p>
 
 #### HTTP 劫持
@@ -231,7 +231,7 @@
 #### TCP 滑动窗口
 
 <p align='center'>
-    <img src='../images/tcp_slide_windows.png'>
+    <img src='./images/tcp_slide_windows.png'>
 </p>
 
     窗口是缓存的一部分，用来暂时存放字节流。
