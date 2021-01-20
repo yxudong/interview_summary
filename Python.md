@@ -60,8 +60,8 @@ Python 递归的最大层数？998
 Python 小整数池
 Python 的 sort 函数实现原理
 Python 装饰器的原理
-
-
+一行代码写出乘法表
+print("\n".join([" ".join(["%s*%s=%-2s"%(j,i,j*i) for j in range(1,i+1)]) for i in range(1,10)]))
 
 
 
