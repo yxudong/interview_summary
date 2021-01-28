@@ -50,6 +50,94 @@
     传递结构体时，会拷贝结构体中的全部内容。
     传递结构体指针时，会拷贝结构体指针。
 
+#### 反射
+
+    Go 语言提供了一种机制在运行时更新变量和检查它们的值、调用它们的方法，但是在编译时并不知道这些变量的具体类型，这称为反射机制。
+
+    三大法则：
+        1. 从 interface{} 变量可以反射出反射对象；
+        2. 从反射对象可以获取 interface{} 变量；
+        3. 要修改反射对象，其值必须可设置。
+
+#### 下面的 for range 代码是死循环么？
+
+    ```
+    func main() {
+        v := []int{1, 2, 3}
+        for i := range v {
+            v = append(v, i)
+        }
+    }
+    ```
+
+    不会，在遍历之前会对切片复制，遍历的次数不会随着切片的变化而变化
+
+#### 对大数组 for range 遍历有什么问题？
+
+    ```
+     //假设值都为1，这里只赋值3个
+    var arr = [102400]int{1, 1, 1} 
+    for i, n := range arr {
+        //just ignore i and n for simplify the example
+        _ = i 
+        _ = n 
+    }
+    ```
+
+    遍历前会对数组进行拷贝，浪费内存并且影响性能，可以对数组取地址遍历 for i, n := range &arr，或者对数组做切片引用 for i, n := range arr[:]
+
+#### for range 对遍历的元素取地址加到另外一个切片后有什么问题？
+
+    ```
+    func main() {
+        arr := []int{1, 2, 3}
+        newArr := []*int{}
+        for _, v := range arr {
+            newArr = append(newArr, &v)
+        }
+        for _, v := range newArr {
+            fmt.Println(*v)
+        }
+    }
+
+    // 输出 3 3 3
+    ```
+
+    在 for range 中，变量 v 每次迭代的值都是赋值给 v，该变量的内存地址始终未变，这样把它的地址追加到新的切片中，该切片保存的都是同一个地址。
+    可以在 newArr = append(newArr, &v) 前面加上 v := v，可以通过下标取原切片的值
+
+#### 迭代修改变量问题
+
+    ```
+    package main
+
+    import (
+        "fmt"
+    )
+
+    type user struct {
+        name string
+        age uint64
+    }
+
+    func main()  {
+        u := []user{
+            {"asong",23},
+            {"song",19},
+            {"asong2020",18},
+        }
+        for _,v := range u{
+            if v.age != 18{
+                v.age = 20
+            }
+        }
+        fmt.Println(u)
+    }
+
+    // [{asong 23} {song 19} {asong2020 18}]
+    ```
+
+    v 变量是拷贝切片中的数据，修改拷贝数据不会对原切片有影响
 
 
 
@@ -99,6 +187,36 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### make 和 new 的区别
 
 #### channel 实现原理
 
