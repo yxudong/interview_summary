@@ -1,6 +1,6 @@
 #### slice 的底层实现
 
-    切片本身并不是动态数组或者数组指针。它内部实现的数据结构通过指针引用底层数组，设定相关属性将数据读写操作限定在指定的区域内。
+    slice 本身并不是动态数组或者数组指针。它内部实现的数据结构通过指针引用底层数组，设定相关属性将数据读写操作限定在指定的区域内。
     ```
     type slice struct {
         array unsafe.Pointer
@@ -8,9 +8,9 @@
         cap   int
     }
     ```
-    切片的结构体由3部分构成，Pointer 是指向一个数组的指针，len 代表当前切片的长度，cap 是当前切片的容量。cap 总是大于等于 len 的。
+    slice 的结构体由3部分构成，Pointer 是指向一个数组的指针，len 代表当前切片的长度，cap 是当前切片的容量。cap 总是大于等于 len 的。
 
-#### 切片扩容策略
+#### slice 扩容策略
 
     1. 首先判断，如果新申请容量（cap）大于2倍的旧容量（old.cap），最终容量（newcap）就是新申请的容量（cap）
     2. 否则判断，如果旧切片的长度小于1024，则最终容量(newcap)就是旧容量(old.cap)的两倍，即（newcap=doublecap）
@@ -20,7 +20,7 @@
 
     注意：扩容扩大的容量都是针对原来的容量而言的，而不是针对原来数组的长度而言的。
 
-    切片扩容后是新数组 or 老数组？
+    slice 扩容后是新数组 or 老数组？
         1. 由于原数组还有容量可以扩容，所以执行 append() 操作以后，会在原数组上直接操作，
            所以这种情况下，扩容以后的数组还是指向原来的数组。
         2. 如果原来数组的容量已经达到了最大值，再想扩容，Go 默认会先开一片内存区域，把原来的值拷贝过来，然后再执行 append() 操作。
@@ -106,7 +106,7 @@
     在 for range 中，变量 v 每次迭代的值都是赋值给 v，该变量的内存地址始终未变，这样把它的地址追加到新的切片中，该切片保存的都是同一个地址。
     可以在 newArr = append(newArr, &v) 前面加上 v := v，可以通过下标取原切片的值
 
-#### 迭代修改变量问题
+#### for range 迭代修改变量问题
 
     ```
     package main
@@ -139,26 +139,67 @@
 
     v 变量是拷贝切片中的数据，修改拷贝数据不会对原切片有影响
 
+#### for-range 里 goroutine 闭包捕获的代码问题
 
+    ```
+    for _, val := range values {
+        go func() {
+            fmt.Println(val)
+        }()
+    }
+    ```
+    或
+    ```
+    for _, val := range values {
+        go val.MyMethod()
+    }
 
+    func (v *val) MyMethod() {
+            fmt.Println(v)
+    }
+    ```
 
+    大概率都会只打印最后的值，goroutine 很可能会在循环过后才启动，每次 goroutine 都是获取同样的变量 val
+    可以改成
 
+    ```
+    for _, val := range values {
+        go func(val interface{}) {
+            fmt.Println(val)
+        }(val)
+    }
+    ```
+    或
+    ```
+    for i := range valslice {
+        val := valslice[i]
+        go func() {
+            fmt.Println(val)
+        }()
+    }
+    ```
 
+    注意：如果不在 goroutine 中使用闭包，不会出现这样的问题
+    ```
+    for i := 1; i <= 5; i++ {
+        func() {
+            fmt.Println(i)
+        }()
+    }
 
+    // 1 2 3 4 5
+    ```
 
+#### select 在遇到多个 Channel 同时响应时，怎样执行？
 
+    随机执行一种情况（避免饥饿问题，保证公平性）
 
+#### select 在多个文件或者 Channel 状态改变之前会怎么样？
 
-
-
-
-
-
-
-
-
-
-
+    如果 select 控制结构中不包含 default 语句，select 会一直阻塞当前线程或者 Goroutine。
+    如果 select 控制结构中包含 default 语句，那么这个 select 语句在执行时会遇到以下两种情况：
+        1. 当存在可以收发的 Channel 时，直接处理该 Channel 对应的 case；
+        2. 当不存在可以收发的 Channel 时，执行 default 中的语句（可以用这种方式实现非阻塞）；
 
 
 
