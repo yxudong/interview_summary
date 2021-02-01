@@ -42,6 +42,10 @@
     使用运算符"+"连接字符串每次都会产生新的字符串，涉及到拷贝，
     并且会产生很多临时的无用的字符串，给 gc 带来额外的负担，所以性能比较差。
 
+#### 怎么高效拼接字符串？
+
+    todo
+
 #### Go 在函数参数传递的时候是值传递还是引用传递？
 
     无论是传递基本类型、结构体还是指针，都会对传递的参数进行拷贝。
@@ -201,63 +205,131 @@
         1. 当存在可以收发的 Channel 时，直接处理该 Channel 对应的 case；
         2. 当不存在可以收发的 Channel 时，执行 default 中的语句（可以用这种方式实现非阻塞）；
 
+#### defer 的执行顺序？
 
+    每次遇到 defer 相当于放入栈中（底层是用链表模拟栈），最终取出执行
 
+#### defer 的调用时机？
 
+    defer 传入的函数不是在退出代码块的作用域时执行的，它只会在当前函数和方法返回之前被调用。
 
+#### defer 预计算参数
 
+    ```
+    func main() {
+        startedAt := time.Now()
+        defer fmt.Println(time.Since(startedAt))
+        
+        time.Sleep(time.Second)
+    }
 
+    // 0s
+    ```
 
+    defer 关键字会立刻拷贝函数中引用的外部参数，所以 time.Since(startedAt) 的结果不是在 main 函数退出之前计算的，
+    而是在 defer 关键字调用时计算的，最终导致上述代码输出 0s。
 
+    解决方法：
+    ```
+    func main() {
+        startedAt := time.Now()
+        defer func() { fmt.Println(time.Since(startedAt)) }()
+        
+        time.Sleep(time.Second)
+    }
 
+    // 1s
+    ```
 
+    向 defer 关键字传入匿名函数，虽然调用 defer 关键字时也使用值传递，但是拷贝的是函数指针，可以打印出符合预期的结果。
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#### recover 只有在 defer 中调用才会生效
 
 #### make 和 new 的区别
+
+    new:
+        根据传入的类型分配 zeroed（零值）空间并返回指向这片内存空间的指针。
+        ```
+        i := new(int)
+
+        var v int
+        i := &v
+
+        // 两种不同初始化方法是等价的，它们都会创建一个指向 int 零值的指针
+        ```
+    make:
+        只能初始化 slice，map，channel，不返回指针
+        ```
+        // Using make() to initialize a map.
+        m := make(map[string]bool, 0)
+
+        // Using a composite literal to initialize a map.
+        m := map[string]bool{}
+
+        // 两种方法是等价的
+        ```
+        注意 new 返回的是零值，而 slice，map，channel 的零值是 nil，所以 new 返回的上述三种类型是不能直接使用的
+
+#### context 包
+
+    用途：
+        是在不同 Goroutine 之间同步请求特定数据、取消信号以及处理请求的截止日期。
+        可能会创建多个 Goroutine 来处理一次请求，不使用 context，每个 Goroutine 可能无限执行下去。
+
+    context.Context 接口需要实现的方法：
+        Deadline
+            返回 context.Context 被取消的时间，也就是完成工作的截止日期
+        Done
+            返回一个 Channel，这个 Channel 会在当前工作完成或者上下文被取消之后关闭，
+            多次调用 Done 方法会返回同一个 Channel
+        Err
+            返回 context.Context 结束的原因，它只会在 Done 返回的 Channel 被关闭时才会返回非空的值
+            如果 context.Context 被取消，会返回 Canceled 错误；
+            如果 context.Context 超时，会返回 DeadlineExceeded 错误；
+        Value
+            从 context.Context 中获取键对应的值，对于同一个上下文来说，多次调用 Value 并传入相同的 Key 会返回相同的结果，
+            该方法可以用来传递请求特定的数据
+
+    Context 是线程安全的吗？
+        是，可以放心的在多个 goroutine 中传递。同一个 Context 可以传给使用其的多个 goroutine，
+        且 Context 可被多个 goroutine 同时安全访问。
+        因为 context 本身是不可变的（Value 也一定应该是线程安全的）。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #### channel 实现原理
 

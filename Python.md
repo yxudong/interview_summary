@@ -74,11 +74,11 @@ Python 小整数池
 Python 的 sort 函数实现原理
 Python 装饰器的原理
 一行代码写出乘法表
-print("\n".join([" ".join(["%s*%s=%-2s"%(j,i,j*i) for j in range(1,i+1)]) for i in range(1,10)]))
+    print("\n".join([" ".join(["%s*%s=%-2s"%(j,i,j*i) for j in range(1,i+1)]) for i in range(1,10)]))
 Python dict，set，list，tuple 底层实现原理，源码
 代码题:实现一个生产者消费者
-
-
+Python 线程安全
+    https://segmentfault.com/a/1190000022644337
 
 
 
