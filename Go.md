@@ -290,20 +290,187 @@
             从 context.Context 中获取键对应的值，对于同一个上下文来说，多次调用 Value 并传入相同的 Key 会返回相同的结果，
             该方法可以用来传递请求特定的数据
 
+    WithCancel 函数
+        func WithCancel(parent Context) (ctx Context, cancel CancelFunc)
+        传递一个父 Context 作为参数，返回子 Context，以及一个取消函数用来取消 Context。
+    WithDeadline 函数
+        func WithDeadline(parent Context, deadline time.Time) (Context, CancelFunc)
+        和 WithCancel 差不多，它会多传递一个截止时间参数，意味着到了这个时间点，会自动取消 Context，
+        当然我们也可以不等到这个时候，可以提前通过取消函数进行取消。
+    WithTimeout 函数
+        func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc)
+        和 WithDeadline 基本上一样，这个表示是超时自动取消，是多少时间后自动取消 Context 的意思。
+    WithValue 函数
+        func WithValue(parent Context, key, val interface{}) Context
+        和取消 Context 无关，它是为了生成一个绑定了一个键值对数据的 Context，这个绑定的数据可以通过 Context.Value 方法访问到。
+
     Context 是线程安全的吗？
         是，可以放心的在多个 goroutine 中传递。同一个 Context 可以传给使用其的多个 goroutine，
         且 Context 可被多个 goroutine 同时安全访问。
         因为 context 本身是不可变的（Value 也一定应该是线程安全的）。
 
+#### sync.Map
 
+    参考：https://juejin.cn/post/6844903895227957262
 
+    map 在并发情况下，只读是线程安全的，同时写线程不安全。
+    可以通过 sync.RWMutex 自己实现并发安全的 map
 
+    官方实现的 sync.Map 的核心数据结构:
+    ```
+    type Map struct {
+        mu Mutex
+        read atomic.Value // readOnly
+        dirty map[interface{}]*entry
+        misses int
+    }
+    ```
+    mu 加锁作用。保护后文的 dirty 字段
+    read 存读的数据。因为是 atomic.Value 类型，只读，所以并发是安全的。实际存的是 readOnly 的数据结构。
+    misses 计数作用。每次从 read 中读失败，则计数 +1。
+    dirty 包含最新写入的数据。当 misses 计数达到一定值，将其赋值给 read。
+    写：直写 dirty。
+    读：先读 read，没有再读 dirty。
 
+    优缺点：
+        优点：通过读写分离，降低锁时间来提高效率。
+        缺点：不适用于大量写的场景，这样会导致 read map 读不到数据而进一步加锁读取，
+              同时 dirty map 也会一直晋升为 read map，整体性能较差。
+    适用场景：大量读，少量写
 
+#### sync.pool
 
+    参考：https://zhuanlan.zhihu.com/p/133638023
+          https://juejin.cn/post/6844903903046320136#heading-14
 
+    频繁地分配、回收内存会给 GC 带来一定的负担，严重的时候会引起 CPU 的毛刺，sync.Pool 可以将暂时不用的对象缓存起来，
+    待下次需要的时候直接使用，不用再次经过内存分配，复用对象的内存，减轻 GC 的压力，提升系统的性能。
+    ```
+    type Pool struct {
+        // noCopy，防止当前类型被 copy
+        noCopy noCopy
 
+        // [P]poolLocal 数组指针
+        local     unsafe.Pointer
+        // 数组大小
+        localSize uintptr
 
+        // 选填的自定义函数，缓冲池无数据的时候会调用，不设置默认返回 nil
+        New func() interface{} //新建对象函数
+    }
+
+    type poolLocalInternal struct {
+        // 私有缓存区
+        private interface{}
+        // 公共缓存区
+        shared  []interface{}
+        // 锁
+        Mutex
+    }
+
+    type poolLocal struct {
+        // 每个 P 对应的 pool
+        poolLocalInternal
+
+        // 防止"false sharing/伪共享"
+        pad [128 - unsafe.Sizeof(poolLocalInternal{})%128]byte
+    }
+    ```
+    GMP 模型中的每个 P 对应一个 poolLocal
+    put：优先放入 private 空间，后面再放入 shared 空间
+    get：优先从 private 空间拿，再加锁从 shared 空间拿，还没有再从其他的 PoolLocal 的 shared 空间拿，
+         还没有就直接 new 一个返回。
+
+    sync.Pool的特性
+        1. 无大小限制。
+        2. 自动清理，每次 GC 前会清掉 Pool 里的所有对象。所以不适用于做连接池。
+        3. 每个 P 都会有一个本地的 poolLocal，Get 和 Put 优先在当前 P 的本地 poolLocal 操作。其次再进行跨 P 操作。
+        4. 所以 Pool 的最大个数是 runtime.GOMAXPROCS(0)。
+
+    pool 是永久保存的吗？
+        会进行清理，时间就是两次 GC 间隔的时间。
+        sync.Pool 只是对对象的复用，不可以当做对象保存（比如连接池），因为 Pool 中的对象随时可能被 GC 了。
+
+    为什么获取 shared 要加锁，而 private 不用？
+        每个 P 都分配一个 localPool，在同一个 P 下面只会有一个 Gouroutine 在跑，
+        所以这里的 private，在同一时间就只可能被一个 Gouroutine 获取到。
+        而 shared 就不一样了，有可能被其他的 P 给获取走，在同一时间就只可能被多个 Gouroutine 获取到，
+        为了保证数据竞争，必须加一个锁来保证只会被一个 G 拿走。
+
+    为什么这样设计？
+        Goroutine 能同一时刻在并行的数量有限，是由 runtime.GOMAXPROCS(0)设置的，
+        这里的 Pool 将数据与 P 进行绑定了，分散在了各个真正并行的线程中，
+        每个线程优先从自己的 poolLocal 中获取数据，很大程度上降低了锁竞争。
+
+#### sync 包
+
+    包括常见的 sync.Mutex、sync.RWMutex、sync.WaitGroup、sync.Once、sync.Cond 和 sync.Map、sync.pool 等等
+    sync.Map、sync.pool 上面介绍过
+
+    sync.Mutex
+        ```
+        type Mutex struct {
+            state int32
+            sema  uint32
+        }
+        ```
+        state 表示当前互斥锁的状态，而 sema 是用于控制锁状态的信号量。
+        state 中最低三位分别表示 mutexLocked、mutexWoken 和 mutexStarving，剩下的位置为 waitersCount。
+                mutexLocked — 表示互斥锁的锁定状态；
+                mutexWoken — 表示从正常模式被从唤醒；
+                mutexStarving — 当前的互斥锁进入饥饿状态；
+                waitersCount — 当前互斥锁上等待的 Goroutine 个数；
+
+        sync.Mutex 有两种模式 — 正常模式和饥饿模式。
+            在正常模式下，锁的等待者会按照先进先出的顺序获取锁。
+            但是刚被唤起的 Goroutine 与新创建的 Goroutine 竞争时，大概率会获取不到锁，
+            为了减少这种情况的出现，一旦 Goroutine 超过 1ms 没有获取到锁，它就会将当前互斥锁切换饥饿模式，
+            防止部分 Goroutine 被『饿死』。
+
+        加锁：
+            1. 通过原子操作判断
+               当锁的状态是 0 时，将 mutexLocked 位置成 1，返回；
+               如果互斥锁的状态不是 0 时就会调用 sync.Mutex.lockSlow 尝试通过自旋（Spinnig）等方式等待锁的释放，
+               该方法的主体是一个非常大 for 循环，这里将它分成几个部分介绍获取锁的过程：
+            2. 判断当前 Goroutine 能否进入自旋；
+            3. 通过自旋等待互斥锁的释放；
+            4. 计算互斥锁的最新状态；
+            5. 通过原子操作更新互斥锁的状态并获取锁；
+
+        解锁：
+            1. 先校验锁状态的合法性，如果当前互斥锁已经被解锁过了会直接抛出异常"sync: unlock of unlocked mutex"中止当前程序。
+            2. 在正常模式下
+                1. 如果互斥锁不存在等待者或者互斥锁的 mutexLocked、mutexStarving、mutexWoken 状态不都为 0，
+                   那么当前方法可以直接返回，不需要唤醒其他等待者；
+                2. 如果互斥锁存在等待者，会通过 sync.runtime_Semrelease 唤醒等待者并移交锁的所有权；
+               在饥饿模式下，上述代码会直接调用 sync.runtime_Semrelease 将当前锁交给下一个正在尝试获取锁的等待者，
+               等待者被唤醒后会得到锁，在这时互斥锁还不会退出饥饿状态；
+
+    sync.RWMutex
+        读写互斥锁 sync.RWMutex 是细粒度的互斥锁，它不限制资源的并发读，但是读写、写写操作无法并行执行。
+
+        ```
+        type RWMutex struct {
+            w           Mutex
+            writerSem   uint32
+            readerSem   uint32
+            readerCount int32
+            readerWait  int32
+        }
+        ```
+        w — 复用互斥锁提供的能力；
+        writerSem 和 readerSem — 分别用于写等待读和读等待写的信号量：
+        readerCount 存储了当前正在执行的读操作数量；
+        readerWait 表示当写操作被阻塞时等待的读操作个数；
+
+    sync.WaitGroup
+        可以等待一组 Goroutine 的返回。
+
+    sync.Once
+        可以保证在 Go 程序运行期间的某段代码只会执行一次。
+
+    sync.Cond
+        可以让一组的 Goroutine 都在满足特定条件时被唤醒。
 
 
 
@@ -335,9 +502,9 @@
 
 #### channel 关闭后读写
 
-#### sync 包
+#### 内存分配器
 
-#### mutex
+    todo
 
 #### Go 的垃圾回收机制
 
@@ -360,31 +527,20 @@
     Golang 1.7 之前的写屏障使用的经典的 Dijkstra-style insertion write barrier， STW 的主要耗时就在 stack re-scan 的过程。
     自 1.8 之后采用一种混合的写屏障方式 （Yuasa-style deletion write barrier 和 Dijkstra-style insertion write barrier）来避免 re-scan
 
-#### Goroutine 原理
+#### Goroutine 原理（调度器）
 
     goroutine 的实现方式目前主要用 GPM 模型来描述。
     GPM 其中 G 是指 Goroutine,P是指Process(逻辑调度器）,M是指Machine
+
+    todo
+
+#### 栈空间管理
+
     todo
 
 #### Goroutine 和 Python 里面的协程有什么区别？
 
     todo
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
