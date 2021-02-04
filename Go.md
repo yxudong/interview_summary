@@ -472,35 +472,74 @@
     sync.Cond
         可以让一组的 Goroutine 都在满足特定条件时被唤醒。
 
+#### 计时器
 
+    所有的计时器都以最小四叉堆的形式存储在处理器 runtime.p 中。
 
+    计时器什么时间触发？
+        1. 调度器调度时会检查处理器中的计时器是否准备就绪；
+        2. 系统监控会检查是否有未执行的到期计时器；
 
+#### 系统监控
 
+    当 Go 语言程序启动时，会创建新的独立线程启动系统监控。
+    主要有以下功能：
+        1. 检查死锁
+        2. 运行计时器 — 获取下一个需要被触发的计时器；
+        3. 轮询网络 — 获取需要处理的到期文件描述符；
+        4. 抢占处理器 — 抢占运行时间较长的或者处于系统调用的 Goroutine；
+        5. 垃圾回收 — 在满足条件时触发垃圾收集回收内存；
 
+#### Channel
 
+    发送和接收数据的顺序：
+        带缓冲区和不带缓冲区的 Channel 都会遵循先入先出发送和接收数据
 
+    ```
+    type hchan struct {
+        qcount   uint
+        dataqsiz uint
+        buf      unsafe.Pointer
+        elemsize uint16
+        closed   uint32
+        elemtype *_type
+        sendx    uint
+        recvx    uint
+        recvq    waitq
+        sendq    waitq
 
+        lock mutex
+    }
+    ```
+    qcount — Channel 中的元素个数；
+    dataqsiz — Channel 中的循环队列的长度；
+    buf — Channel 的缓冲区数据指针（只针对有缓冲的 channel，指向底层循环数组）；
+    sendx — Channel 的发送操作处理到的位置；
+    recvx — Channel 的接收操作处理到的位置；
+    elemsize 和 elemtype 分别表示当前 Channel 能够收发的元素类型和大小；
+    sendq 和 recvq 存储了当前 Channel 由于缓冲区空间不足而阻塞的 Goroutine 列表，这些等待队列使用双向链表表示；
 
+    创建管道：
+        Go 语言中所有 Channel 的创建都会使用 make 关键字。
+        如果不向 make 传递表示缓冲区大小的参数，那么就会设置一个默认值 0，也就是当前的 Channel 不存在缓冲区，
+        否则就是有缓冲区的 Channel。
 
+    接收和发送数据都需要想获取锁。
 
+<p align='center'>
+    <img src='./images/操作 channel 结果.jpg'>
+</p>
 
+#### Goroutine 原理（调度器）
 
+    goroutine 的实现方式目前主要用 GPM 模型来描述。
+    GPM 其中 G 是指 Goroutine,P是指Process(逻辑调度器）,M是指Machine
 
+    todo
 
+#### 网络轮询器
 
-
-
-
-
-
-
-
-
-
-
-#### channel 实现原理
-
-#### channel 关闭后读写
+    todo
 
 #### 内存分配器
 
@@ -526,13 +565,6 @@
 
     Golang 1.7 之前的写屏障使用的经典的 Dijkstra-style insertion write barrier， STW 的主要耗时就在 stack re-scan 的过程。
     自 1.8 之后采用一种混合的写屏障方式 （Yuasa-style deletion write barrier 和 Dijkstra-style insertion write barrier）来避免 re-scan
-
-#### Goroutine 原理（调度器）
-
-    goroutine 的实现方式目前主要用 GPM 模型来描述。
-    GPM 其中 G 是指 Goroutine,P是指Process(逻辑调度器）,M是指Machine
-
-    todo
 
 #### 栈空间管理
 
