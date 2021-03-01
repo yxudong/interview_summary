@@ -534,11 +534,9 @@
 
     参考：
         https://www.zhihu.com/question/20862617/answer/131341519
-        https://xiaoming.net.cn/2020/12/03/goroutine%E8%B0%83%E5%BA%A6%E5%99%A8%E5%8E%9F%E7%90%86/
-        https://juejin.cn/post/6844904176154050574
-        https://juejin.cn/post/6844904176154050574
-        https://github.com/lifei6671/interview-go/blob/master/base/go-gpm.md
-        https://github.com/lifei6671/interview-go/blob/master/base/go-scheduler.md
+        https://www.zhihu.com/question/20862617/answer/710435704
+        https://learnku.com/articles/41728
+        https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-goroutine/#%E7%BA%BF%E7%A8%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F
 
     版本演进：
         （0.x） 单线程调度器：
@@ -558,8 +556,9 @@
                 Goroutine 可能会因为垃圾回收和循环（没有函数调用）长时间占用资源导致程序暂停；
             （1.14 ~ 至今） 基于信号的抢占式调度器
                 实现基于信号的真抢占式调度；
-                垃圾回收在扫描栈时会触发抢占调度；
-                抢占的时间点不够多，还不能覆盖全部的边缘情况；
+                首先注册绑定 SIGURG 信号及处理方法，在触发垃圾回收的栈扫描时，调用函数挂起 Goroutine，
+                并向 M 发送信号，M 收到信号后，会让当前 Goroutine 陷入休眠继续执行其他的 Goroutine，
+                抢占的时间点不够多（只有触发垃圾回收的栈扫描时，因为这是一个可以抢占的安全点），还不能覆盖全部的边缘情况；
         （提案） 非均匀存储访问调度器
             对运行时的各种资源进行分区；
             实现非常复杂，到今天还没有提上日程；
@@ -590,16 +589,67 @@
         M 的数量：
             1. go 语言本身的限制：go 程序启动时，会设置 M 的最大数量，默认 10000。
                但是内核很难支持这么多的线程数，所以这个限制可以忽略。
-            2. runtime/debug 中的 SetMaxThreads 函数，可以设置 M 的最大数量
-            3. 一个 M 阻塞了，会创建新的 M。
+            2. runtime/debug 中的 SetMaxThreads 函数，可以设置 M 的最大数量。
         M 与 P 的数量没有绝对关系，一个 M 阻塞，P 就会去创建或者切换另一个 M，
         所以，即使 P 的默认数量是 1，也有可能会创建很多个 M 出来。
 
-    go func() 调度流程
+    调度循环：
+        调度器启动之后，Go 语言运行时会初始化线程并调用 runtime.schedule 进入调度循环：
+
+        runtime.schedule 函数会从下面几个地方查找待执行的 Goroutine：
+            1. 为了保证公平，当全局运行队列中有待执行的 Goroutine 时，
+               保证有 1/61 的几率会从全局的运行队列中查找对应的 Goroutine
+               （全局运行队列是所有工作线程都可以访问的，所以在访问它之前需要加锁）；
+            2. 从处理器本地的运行队列中查找待执行的 Goroutine；
+            3. 如果前两种方法都没有找到 Goroutine，会通过 runtime.findrunnable 进行阻塞地查找 Goroutine；
+
+        runtime.findrunnable：
+            1. 从本地运行队列、全局运行队列中查找；
+            2. 从网络轮询器中查找是否有 Goroutine 等待运行；
+            3. 通过 runtime.runqsteal 尝试从其他随机的处理器中窃取待运行的 Goroutine；
+            因为函数的实现过于复杂，上述的执行过程是经过简化的，
+            总而言之，当前函数一定会返回一个可执行的 Goroutine，
+            如果当前不存在就会通过轮询网络的方式直到返回可用的 Goroutine，也就是线程自旋（最大数量为 GOMAXPROCS）。
+
+        接下来由 runtime.execute 执行获取的 Goroutine，
+        做好准备工作后，它会通过 runtime.gogo 将 Goroutine 调度到当前线程上。
+        当 Goroutine 中运行的函数返回时，最终在当前线程的 g0 的栈上调用 runtime.goexit0 函数，
+        该函数会将 Goroutine 转换会 _Gdead 状态、清理其中的字段、
+        移除 Goroutine 和线程的关联并把 Goroutine 重新加入处理器的 Goroutine 空闲列表 gFree：
+
+        在最后 runtime.goexit0 会重新调用 runtime.schedule 触发新一轮的 Goroutine 调度，
+
+        Go 语言中的运行时调度循环会从 runtime.schedule 开始，最终又回到 runtime.schedule，
+        可以认为调度循环永远都不会返回。
 
 <p align='center'>
-    <img src='./images/go func() 调度流程.jpg'>
+    <img src='./images/golang-scheduler-loop.png'>
 </p>
+
+        调度时机：
+            1. 系统调用
+            2. time 定时类操作
+            3. 使用关键字 go
+            4. atomic，mutex，channel 操作等会使 goroutine 阻塞
+            5. GC
+            6. 主动调用 runtime.Gosched()
+            7. 系统监控
+            等等
+
+
+
+
+
+
+
+
+在 Go 里面阻塞主要分为以下 4 种场景：
+
+由于原子、互斥量或通道操作调用导致 Goroutine 阻塞，调度器将把当前阻塞的 Goroutine 切换出去，重新调度 LRQ 上的其他 Goroutine；
+由于网络请求和 IO 操作导致 Goroutine 阻塞。Go 程序提供了网络轮询器（NetPoller）来处理网络请求和 IO 操作的问题，其后台通过 kqueue（MacOS），epoll（Linux）或 iocp（Windows）来实现 IO 多路复用。通过使用 NetPoller 进行网络系统调用，调度器可以防止 Goroutine 在进行这些系统调用时阻塞 M。这可以让 M 执行 P 的 LRQ 中其他的 Goroutines，而不需要创建新的 M。执行网络系统调用不需要额外的 M，网络轮询器使用系统线程，它时刻处理一个有效的事件循环，有助于减少操作系统上的调度负载。用户层眼中看到的 Goroutine 中的“block socket”，实现了 goroutine-per-connection 简单的网络编程模式。实际上是通过 Go runtime 中的 netpoller 通过 Non-block socket + I/O 多路复用机制“模拟”出来的。
+当调用一些系统方法的时候（如文件 I/O），如果系统方法调用的时候发生阻塞，这种情况下，网络轮询器（NetPoller）无法使用，而进行系统调用的 G1 将阻塞当前 M1。调度器引入 其它M 来服务 M1 的P。
+如果在 Goroutine 去执行一个 sleep 操作，导致 M 被阻塞了。Go 程序后台有一个监控线程 sysmon，它监控那些长时间运行的 G 任务然后设置可以强占的标识符，别的 Goroutine 就可以抢先进来执行。
+
 
 #### 网络轮询器
 
