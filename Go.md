@@ -1,3 +1,7 @@
+#### Go 的数据类型，rune 等
+
+    todo
+
 #### slice 的底层实现
 
     slice 本身并不是动态数组或者数组指针。它内部实现的数据结构通过指针引用底层数组，设定相关属性将数据读写操作限定在指定的区域内。
@@ -44,7 +48,7 @@
 
 #### 怎么高效拼接字符串？
 
-    todo
+    使用 strings.Builder，因为是 strings.Builder 以倍数申请内存，并且直接将底层的 []byte 转换成字符串类型返回。
 
 #### Go 在函数参数传递的时候是值传递还是引用传递？
 
@@ -88,7 +92,8 @@
     }
     ```
 
-    遍历前会对数组进行拷贝，浪费内存并且影响性能，可以对数组取地址遍历 for i, n := range &arr，或者对数组做切片引用 for i, n := range arr[:]
+    遍历前会对数组进行拷贝，浪费内存并且影响性能，
+    可以对数组取地址遍历 for i, n := range &arr，或者对数组做切片引用 for i, n := range arr[:]
 
 #### for range 对遍历的元素取地址加到另外一个切片后有什么问题？
 
@@ -107,7 +112,8 @@
     // 输出 3 3 3
     ```
 
-    在 for range 中，变量 v 每次迭代的值都是赋值给 v，该变量的内存地址始终未变，这样把它的地址追加到新的切片中，该切片保存的都是同一个地址。
+    在 for range 中，变量 v 每次迭代的值都是赋值给 v，该变量的内存地址始终未变，
+    这样把它的地址追加到新的切片中，该切片保存的都是同一个地址。
     可以在 newArr = append(newArr, &v) 前面加上 v := v，可以通过下标取原切片的值
 
 #### for range 迭代修改变量问题
@@ -533,10 +539,13 @@
 #### Goroutine 原理（调度器）
 
     参考：
-        https://www.zhihu.com/question/20862617/answer/131341519
-        https://www.zhihu.com/question/20862617/answer/710435704
-        https://learnku.com/articles/41728
-        https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-goroutine/#%E7%BA%BF%E7%A8%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F
+        1. [Golang 的 goroutine 是如何实现的？ - 凌霄Leon的回答 - 知乎](https://www.zhihu.com/question/20862617/answer/131341519)
+        2. [Golang 的 goroutine 是如何实现的？ - ZeaTalk的回答 - 知乎](https://www.zhihu.com/question/20862617/answer/710435704)
+        3. [[典藏版] Golang 调度器 GMP 原理与调度全分析](https://learnku.com/articles/41728)
+        4. [Go 语言设计与实现 6.5 调度器](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-goroutine/#%E7%BA%BF%E7%A8%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F)
+        5. [Go语言为何不使用异步文件IO和PoolDesc？ - 知乎](https://www.zhihu.com/question/54743395)
+        6. [Go netpoller 原生网络模型之源码全面揭秘](https://strikefreedom.top/go-netpoll-io-multiplexing-reactor)
+        7. [为什么要使用 Go 语言？Go 语言的优势在哪里？ - 腾讯技术工程的回答 - 知乎](https://www.zhihu.com/question/21409296/answer/1040884859)
 
     版本演进：
         （0.x） 单线程调度器：
@@ -630,26 +639,29 @@
             1. 系统调用
             2. time 定时类操作
             3. 使用关键字 go
-            4. atomic，mutex，channel 操作等会使 goroutine 阻塞
+            4. atomic，mutex，channel 操作等会使 Goroutine 阻塞
             5. GC
             6. 主动调用 runtime.Gosched()
             7. 系统监控
             等等
 
-
-
-
-
-
-
-
-在 Go 里面阻塞主要分为以下 4 种场景：
-
-由于原子、互斥量或通道操作调用导致 Goroutine 阻塞，调度器将把当前阻塞的 Goroutine 切换出去，重新调度 LRQ 上的其他 Goroutine；
-由于网络请求和 IO 操作导致 Goroutine 阻塞。Go 程序提供了网络轮询器（NetPoller）来处理网络请求和 IO 操作的问题，其后台通过 kqueue（MacOS），epoll（Linux）或 iocp（Windows）来实现 IO 多路复用。通过使用 NetPoller 进行网络系统调用，调度器可以防止 Goroutine 在进行这些系统调用时阻塞 M。这可以让 M 执行 P 的 LRQ 中其他的 Goroutines，而不需要创建新的 M。执行网络系统调用不需要额外的 M，网络轮询器使用系统线程，它时刻处理一个有效的事件循环，有助于减少操作系统上的调度负载。用户层眼中看到的 Goroutine 中的“block socket”，实现了 goroutine-per-connection 简单的网络编程模式。实际上是通过 Go runtime 中的 netpoller 通过 Non-block socket + I/O 多路复用机制“模拟”出来的。
-当调用一些系统方法的时候（如文件 I/O），如果系统方法调用的时候发生阻塞，这种情况下，网络轮询器（NetPoller）无法使用，而进行系统调用的 G1 将阻塞当前 M1。调度器引入 其它M 来服务 M1 的P。
-如果在 Goroutine 去执行一个 sleep 操作，导致 M 被阻塞了。Go 程序后台有一个监控线程 sysmon，它监控那些长时间运行的 G 任务然后设置可以强占的标识符，别的 Goroutine 就可以抢先进来执行。
-
+        阻塞时怎样调度：
+            1. 由于原子、互斥量或通道操作调用导致 Goroutine 阻塞，调度器将把当前阻塞的 Goroutine 切换出去，
+               重新调度 LRQ（本地队列） 上的其他 Goroutine；
+            2. 由于网络请求和 IO 操作（LInux 不包括文件IO，详见参考 5）导致 Goroutine 阻塞。
+               Go 程序提供了网络轮询器（NetPoller）来处理网络请求和 IO 操作的问题，
+               其后台通过 kqueue（MacOS），epoll（Linux）或 iocp（Windows）来实现 IO 多路复用。
+               通过使用 NetPoller 进行网络系统调用，调度器可以防止 Goroutine 在进行这些系统调用时阻塞 M。
+               这可以让 M 执行 P 的 LRQ 中其他的 Goroutines，而不需要创建新的 M。
+               执行网络系统调用不需要额外的 M，网络轮询器使用系统线程，它时刻处理一个有效的事件循环，有助于减少操作系统上的调度负载。
+               用户层眼中看到的 Goroutine 中的“block socket”，实现了 goroutine-per-connection 简单的网络编程模式。
+               实际上是通过 Go runtime 中的 netpoller 通过 Non-block socket + I/O 多路复用机制“模拟”出来的。
+            3. 当调用一些系统方法的时候（如文件 I/O 等，详见参考 5），如果系统方法调用的时候发生阻塞，
+               这种情况下，网络轮询器（NetPoller）无法使用，而进行系统调用的 G1 将阻塞当前 M1，此时 P 会和 M1 解绑，
+               调度器引入其它 M 来服务 M1 的P。
+            4. 如果在 Goroutine 去执行一个 sleep 操作，导致 M 被阻塞了。
+               Go 程序后台有一个监控线程 sysmon，它监控那些长时间运行的 G 任务然后设置可以强占的标识符，
+               别的 Goroutine 就可以抢先进来执行。
 
 #### 网络轮询器
 
@@ -662,6 +674,9 @@
 #### Go 的垃圾回收机制
 
     todo
+
+    参考：
+        https://zhuanlan.zhihu.com/p/334999060
 
         * Go V1.3之前标记-清除(mark and sweep)算法
         * Go V1.5的三色并发标记法
@@ -684,22 +699,40 @@
 
     todo
 
-#### Goroutine 和 Python 里面的协程有什么区别？
+#### Go 和 Python 里面的协程有什么区别？
 
-    todo
+    Python 协程的特点：
+        1. 从协程：线程的对应方式来看是 N:1 模式，多个协程在一个线程中切换。在IO密集时切换效率高，但没有用到多核。
+        2. 协程间完全同步，不会并行。不需要考虑数据安全。
+        3. 属于协作式任务处理，程序需要主动交出控制权，宿主才能获得控制权并将控制权交给其他 coroutine。
+           如果开发者无意间或者故意让应用程序长时间占用 CPU，表现出来的效果就是计算机很容易失去响应或者死机。
 
-#### 什么时候使用 channel，什么时候使用 sync？为什么说使用通信共享内存，而不是使用共享内存通信？
+    Go 协程的特点：
+        1. 从协程：线程的对应方式来看是 M:N 模式，多个协程在多个线程上切换，既可以用到多核，又可以减少切换开销。
+        2. 协程间需要保证数据安全，比如通过 channel 或锁。
+        3. 协程间不完全同步，可以并行运行，具体要看 channel 的设计。
+        4. 属于抢占式任务处理，如果发现一个应用程序长时间大量地占用 CPU，那么用户有权终止这个任务。
 
-    todo
+#### 为什么说使用通信共享内存，而不是使用共享内存通信？
 
-#### Goroutine 和线程切换？
+    参考：
+        [为什么使用通信来共享内存](https://draveness.me/whys-the-design-communication-shared-memory/)
 
-    todo
+    1. （抽象层级）首先，使用发送消息来同步信息相比于直接使用共享内存和互斥锁是一种更高级的抽象，
+       使用更高级的抽象能够为我们在程序设计上提供更好的封装，让程序的逻辑更加清晰；
+    2. （解耦合）其次，消息发送在解耦方面与共享内存相比也有一定优势，可以将线程的职责分成生产者和消费者，
+       并通过消息传递的方式将它们解耦，不需要再依赖共享内存；
+    3. （避免线程竞争）最后，Go 语言选择消息发送的方式，通过保证同一时间只有一个活跃的线程能够访问数据，
+       能够从设计上天然地避免线程竞争和数据冲突的问题；
 
+#### 什么时候使用 channel，什么时候使用 sync？
 
+    参考：
+        https://zhuanlan.zhihu.com/p/213712219
 
-
-
+<p align='center'>
+    <img src='./images/Go Primitive vs Channel'>
+</p>
 
 
 
