@@ -1,6 +1,10 @@
-#### Go 的数据类型，rune 等
+#### Go 的数据类型 rune 和 byte
 
-    todo
+    byte 是 uint8 的别名，它表示的是 ACSII 表中的一个字符。
+    rune 是 int32 的别名，几乎在所有方面等同于 int32，它表示的是一个 Unicode 字符。
+
+    因为 uint8 和 uint32，直观上让人以为这是一个数值，但是实际上，它也可以表示一个字符，
+    所以为了消除这种直观错觉，就诞生了 byte 和 rune 这两个别名类型。
 
 #### slice 的底层实现
 
@@ -663,14 +667,6 @@
                Go 程序后台有一个监控线程 sysmon，它监控那些长时间运行的 G 任务然后设置可以强占的标识符，
                别的 Goroutine 就可以抢先进来执行。
 
-#### 网络轮询器
-
-    todo
-
-#### 内存分配器
-
-    todo
-
 #### Go 的垃圾回收机制
 
     todo
@@ -695,9 +691,34 @@
     Golang 1.7 之前的写屏障使用的经典的 Dijkstra-style insertion write barrier， STW 的主要耗时就在 stack re-scan 的过程。
     自 1.8 之后采用一种混合的写屏障方式 （Yuasa-style deletion write barrier 和 Dijkstra-style insertion write barrier）来避免 re-scan
 
-#### 栈空间管理
+#### 逃逸分析
 
-    todo
+    参考：
+        [Go 逃逸分析](https://geektutu.com/post/hpg-escape-analysis.html)
+        [Go变量逃逸分析](https://www.cnblogs.com/itbsl/p/10476674.html)
+
+    逃逸分析决定一个变量是分配在堆上还是分配在栈上。
+    栈内存分配则会非常快，并且栈上内存由在函数返回时自动回收，可以能减小 gc 压力。
+    如果变量分配到堆上，堆不像栈可以自动清理。它会引起 Go 频繁地进行垃圾回收，而垃圾回收会占用比较大的系统开销。
+
+    会发上逃逸的情况：
+        1. 指针逃逸
+           在函数中创建了一个对象，返回了这个对象的指针。
+           这种情况下，函数虽然退出了，但是因为指针的存在，对象的内存不能随着函数结束而回收，因此只能分配在堆上。
+        2. interface{} 动态类型逃逸
+        3. 栈空间不足
+        4. 闭包
+
+#### 内联优化
+
+    参考：
+        [Go 性能调优之 —— 编译优化](https://segmentfault.com/a/1190000016354799)
+        [详解Go内联优化](https://segmentfault.com/a/1190000039146279)
+
+    函数调用是存在一些固定开销的，例如维护帧指针寄存器 BP、栈溢出检测等。
+    因此，对于一些代码行比较少的函数，编译器倾向于将它们在编译期展开从而消除函数调用，这种行为就是内联。
+
+    内联只对叶子函数有效，但是严重的内联会使得堆栈信息更加难以跟踪。
 
 #### Go 和 Python 里面的协程有什么区别？
 
