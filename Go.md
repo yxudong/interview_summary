@@ -321,7 +321,8 @@
 
 #### sync.Map
 
-    参考：https://juejin.cn/post/6844903895227957262
+    参考：
+        [由浅入深聊聊Golang的sync.Map](https://juejin.cn/post/6844903895227957262)
 
     map 在并发情况下，只读是线程安全的，同时写线程不安全。
     可以通过 sync.RWMutex 自己实现并发安全的 map
