@@ -752,7 +752,7 @@
         https://zhuanlan.zhihu.com/p/213712219
 
 <p align='center'>
-    <img src='./images/Go Primitive vs Channel'>
+    <img src='./images/Go Primitive vs Channel.jpg'>
 </p>
 
 
