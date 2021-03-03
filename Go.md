@@ -672,7 +672,8 @@
     todo
 
     参考：
-        https://zhuanlan.zhihu.com/p/334999060
+        1. [Go 语言设计与实现 7.2 垃圾收集器](https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/#722-%E6%BC%94%E8%BF%9B%E8%BF%87%E7%A8%8B)
+        2. [Golang三色标记+混合写屏障GC模式全分析](https://zhuanlan.zhihu.com/p/334999060)
 
         * Go V1.3之前标记-清除(mark and sweep)算法
         * Go V1.5的三色并发标记法
@@ -754,15 +755,3 @@
 <p align='center'>
     <img src='./images/Go Primitive vs Channel.jpg'>
 </p>
-
-
-
-
-
-
-
-
-
-
-
-
