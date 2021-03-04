@@ -1,49 +1,11 @@
-<a name="index">**目录：**</a><br>
-&emsp;&emsp;<a href="#0">Redis 和 Memecache 的区别是什么？</a><br>
-&emsp;&emsp;<a href="#1">Redis 常见数据结构以及使用场景分析？</a><br>
-&emsp;&emsp;<a href="#2">Redis String 的实现原理</a><br>
-&emsp;&emsp;<a href="#3">Redis List 的实现原理</a><br>
-&emsp;&emsp;<a href="#4">Redis Hash 的实现原理</a><br>
-&emsp;&emsp;<a href="#5">Redis Set 的实现原理</a><br>
-&emsp;&emsp;<a href="#6">Redis Sorted Set 的实现原理</a><br>
-&emsp;&emsp;<a href="#7">Redis 压缩采用什么算法?</a><br>
-&emsp;&emsp;<a href="#8">Redis 中的 Bitmaps</a><br>
-&emsp;&emsp;<a href="#9">Redis 中的 HyperLogLog？</a><br>
-&emsp;&emsp;<a href="#10">Redis 客户端和服务器之间通信才用什么协议？</a><br>
-&emsp;&emsp;<a href="#11">Redis 过期策略</a><br>
-&emsp;&emsp;<a href="#12">Redis 内存淘汰机制</a><br>
-&emsp;&emsp;<a href="#13">LRU 与 LFU 的区别</a><br>
-&emsp;&emsp;<a href="#14">Redis 的 LRU 实现</a><br>
-&emsp;&emsp;<a href="#15">如何保证 Redis 中存放的都是热点数据</a><br>
-&emsp;&emsp;<a href="#16">热点 key 问题</a><br>
-&emsp;&emsp;<a href="#17">大 key 问题</a><br>
-&emsp;&emsp;<a href="#18">如何保证缓存与数据库双写时的数据一致性？</a><br>
-&emsp;&emsp;<a href="#19">Redis 如何实现异步队列？</a><br>
-&emsp;&emsp;<a href="#20">Redis 如何实现延时队列？</a><br>
-&emsp;&emsp;<a href="#21">Pipeline 有什么好处，为什么要用 Pipeline？</a><br>
-&emsp;&emsp;<a href="#22">Redis 如何实现分布式锁？</a><br>
-&emsp;&emsp;<a href="#23">Redis 分布式锁和 ZooKeeper 区别？</a><br>
-&emsp;&emsp;<a href="#24">什么是缓存击穿，怎么解决</a><br>
-&emsp;&emsp;<a href="#25">什么是缓存穿透，怎么解决</a><br>
-&emsp;&emsp;<a href="#26">什么是缓存雪崩，怎么解决</a><br>
-&emsp;&emsp;<a href="#27">Redis 并发竞争 key 问题如何解决？</a><br>
-&emsp;&emsp;<a href="#28">为什么 Redis 6.0 之后改用多线程？</a><br>
-&emsp;&emsp;<a href="#29">Redis 的持久化方式</a><br>
-&emsp;&emsp;<a href="#30">Redis AOF 日志原理</a><br>
-&emsp;&emsp;<a href="#31">Redis RDB 快照</a><br>
-&emsp;&emsp;<a href="#32">Redis 事务机制</a><br>
-&emsp;&emsp;<a href="#33">Redis 主从同步机制</a><br>
-&emsp;&emsp;<a href="#34">Redis 哨兵</a><br>
-&emsp;&emsp;<a href="#35">Redis 集群</a><br>
-&emsp;&emsp;<a href="#36">Redis 中，sentinel 和 cluster 的区别和适用场景是什么？</a><br>
-# <a name="0">Redis 和 Memecache 的区别是什么？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 和 Memecache 的区别是什么？
 
     1. Redis 不仅仅支持简单的 k/v 类型的数据，同时还提供 list，set，zset，hash 等数据结构的存储。Memecache 支持简单的数据类型 String
     2. Redis 支持数据的持久化，可以将内存中的数据保持在磁盘中，重启的时候可以再次加载进行使用,而 Memecache 把数据全部存在内存之中
     3. Memcached 没有原生的集群模式，需要依靠客户端来实现往集群中分片写入数据；但是 Redis 目前是原生支持 cluster 模式的
     4. Memcached 是多线程，非阻塞 IO 复用的网络模型；Redis 使用单线程的多路 IO 复用模型
 
-# <a name="1">Redis 常见数据结构以及使用场景分析？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 常见数据结构以及使用场景分析？
 
     1. String 字符串
        字符串类型是 Redis 最基础的数据结构，首先键都是字符串类型，而且其他几种数据结构都是在字符串类型基础上构建的。
@@ -66,7 +28,7 @@
     2. HyperLogLog 应用于基数统计
     3. GEO 应用于地理位置计算
 
-# <a name="2">Redis String 的实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis String 的实现原理
 
     Redis 内部 String 类型采用 SDS（simple dynamic string）表示
     ```
@@ -88,7 +50,7 @@
         3. 可以高效地执行追加操作（append） // 通过预分配空间，free 字段
         4. 二进制安全 // 不以 \0 做为结尾标识
 
-# <a name="3">Redis List 的实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis List 的实现原理
 
     在 Redis 3.2 之前，List 底层采用了 ZipList 和 LinkedList 实现的，在 3.2 之后，List 底层采用了 QuickList。
     Redis 3.2 之前，初始化的 List 使用的 ZipList，当以下两个条件任意一个不满足时，则会被转换成 LinkedList：
@@ -105,7 +67,7 @@
 
     QuickList 是一个 ZipList 组成的双向链表。
 
-# <a name="4">Redis Hash 的实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis Hash 的实现原理
 
     Redis 的哈希对象的底层存储可以使用 ziplist 和 hashtable。
     当 Hash 对象可以同时满足一下两个条件时，哈希对象使用 ziplist 编码：
@@ -127,14 +89,14 @@
     在第 2 步 Redis 不是一次性把全部数据 rehash 成功，这样会导致 Redis 对外服务停止，Redis 内部为了处理这种情况采用渐进式的 rehash。
     Redis 将所有的 rehash 的操作分成多步进行，直到都 rehash 完成，
 
-# <a name="5">Redis Set 的实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis Set 的实现原理
 
     Set 集合采用 intset（整数集合）和 hashtable 两种方式来实现，当满足以下两个条件的时候，采用 intset 实现，
     一旦有一个条件不满足时则采用 hashtable 来实现：
         1. Set 集合中的所有元素都为整数
         2. Set 集合中的元素个数不大于 512（可以通过配置文件修改）
 
-# <a name="6">Redis Sorted Set 的实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis Sorted Set 的实现原理
 
     Zset 底层同样采用了两种方式来实现，分别是 ZipList 和 SkipList。当同时满足以下两个条件时，采用 ZipList 实现；反之采用 SkipList 实现：
         1. Zset 中保存的元素个数小于 128（可以通过配置文件修改）
@@ -155,11 +117,11 @@
         2. Zset 通常是 Zrange 或 Zrevrange 的操作，跳表至少与其他类型的平衡树性能一样好
         3. 跳表实现简单
 
-# <a name="7">Redis 压缩采用什么算法?</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 压缩采用什么算法?
 
     对 ziplist 使用 LZF 算法进行压缩，可以选择压缩深度。
 
-# <a name="8">Redis 中的 Bitmaps</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 中的 Bitmaps
 
     bitmaps 不是一个真实的数据结构。而是 String 类型上的一组面向 bit 操作的集合。
     常用命令：
@@ -171,7 +133,7 @@
         统计每天某一部电影是否被点播 统计每天有多少部电影被点播 统计每周/月/年有多少部电影被点播 统计年度哪部电影没有被点播
             日期作为 key，然后电影 id 为 offset，如果点播过就设置为 1
 
-# <a name="9">Redis 中的 HyperLogLog？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 中的 HyperLogLog？
 
     Redis HyperLogLog 是用来做基数统计的算法，优点是在输入元素的数量或者体积非常非常大时，计算基数所需的空间总是固定的、并且是很小的。
     但是，因为 HyperLogLog 只会根据输入元素来计算基数，而不会储存输入元素本身，所以 HyperLogLog 不能像集合那样，返回输入的各个元素。
@@ -185,12 +147,12 @@
         PFMERGE destkey sourcekey [sourcekey ...]
             将多个 HyperLogLog 合并为一个 HyperLogLog
 
-# <a name="10">Redis 客户端和服务器之间通信才用什么协议？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 客户端和服务器之间通信才用什么协议？
 
     Redis 客户端使用基于 TCP 的 RESP（Redis 的序列化协议，Redis Serialization Protocol）协议与 Redis 的服务器端进行通信。
     类型通过首个字节区分（+,-,:,$,*），每一部分结束时，Redis 统一使用“\r\n”表示结束。
 
-# <a name="11">Redis 过期策略</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 过期策略
 
     1. 定期删除，Redis 默认每隔 100ms 检查，是否有过期的 key，有过期 key 则删除。
        需要说明的是，Redis 不是每隔 100ms 将所有的 key 检查一次，而是随机抽取进行检查(如果每隔 100ms，全部 key 进行检查，Redis 岂不是卡死)。
@@ -200,7 +162,7 @@
     过期策略存在的问题，由于 Redis 定期删除是随机抽取检查，不可能扫描清除掉所有过期的 key 并删除，某些 key 由于未被请求，惰性删除也未触发。
     这样 Redis 的内存占用会越来越高。此时就需要内存淘汰机制
 
-# <a name="12">Redis 内存淘汰机制</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 内存淘汰机制
 
     - no-eviction：默认策略，不淘汰数据；大部分写命令都将返回错误（DEL 等少数除外）
     - allkeys-lru：从所有数据中根据 LRU 算法挑选数据淘汰
@@ -211,7 +173,7 @@
     - allkeys-lfu：从所有数据中根据 LFU 算法挑选数据淘汰（4.0 及以上版本可用）
     - volatile-lfu：从设置了过期时间的数据中根据 LFU 算法挑选数据淘汰（4.0 及以上版本可用）
 
-# <a name="13">LRU 与 LFU 的区别</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# LRU 与 LFU 的区别
 
     LFU：Least Recently Used，最近最少使用
     LFU：Least Frequently Used，使用频率最少的（最不经常使用的）
@@ -226,7 +188,7 @@
 适用场景  | 数据被连续访问场景 | 数据在一段时间内被连续访问
 缺点  | 新增 key 将占据缓存 | 历史访问次数超大的 key 淘汰速度取决于 lfu-decay-time
 
-# <a name="14">Redis 的 LRU 实现</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 的 LRU 实现
 
     Redis 中的 LRU 与常规的 LRU 实现并不相同，常规 LRU 会准确的淘汰掉队头的元素，但是 Redis 的 LRU 并不维护队列，
     只是根据配置的策略要么从所有的 key 中随机选择 N 个（N 可以配置）要么从所有的设置了过期时间的 key 中选出 N 个键，
@@ -237,12 +199,12 @@
     2. 内存占用问题，Redis 对内存要求很高，会尽量降低内存使用率，如果是抽样排序可以有效降低内存的占用
     3. 实际效果基本相等，如果请求符合长尾法则，那么真实 LRU 与 Redis LRU 之间表现基本无差异
 
-# <a name="15">如何保证 Redis 中存放的都是热点数据</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 如何保证 Redis 中存放的都是热点数据
 
     限定 Redis 占用的内存，Redis 会根据自身数据淘汰策略，留下热数据到内存。
     所以，计算一下热点数据大约占用的内存，然后设置一下 Redis 内存限制，并根据业务场景修改淘汰策略
 
-# <a name="16">热点 key 问题</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 热点 key 问题
 
     热点 key 问题就是，突然有几十万甚至更大的请求去访问 Redis 上的某个特定 key。
     那么，这样会造成流量过于集中，达到 Redis 单实例瓶颈（一般是 10W OPS 级别），或者物理网卡上限，从而导致这台 Redis 的服务器 Hold 不住。
@@ -265,7 +227,7 @@
        hot key 之所以是 hot key，是因为它只有一个 key，落地到一个实例上。
        可以给 hot key 加上前缀或者后缀，把一个 hotkey 的数量经过分片分布到不同的实例上，将访问量均摊到所有实例。
 
-# <a name="17">大 key 问题</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 大 key 问题
 
     由于 Redis 主线程为单线程模型，大 key 也会带来一些问题，如：
     1. 集群模式在 slot 分片均匀情况下，会出现数据和查询倾斜情况，部分有大 key 的 Redis 节点占用内存多，QPS 高。
@@ -291,7 +253,7 @@
       删除大key： lazyfree 机制
       unlink 命令，代替 DEL 命令，会把对应的大 key 放到 BIO_LAZY_FREE 后台线程任务队列，然后在后台异步删除。
 
-# <a name="18">如何保证缓存与数据库双写时的数据一致性？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 如何保证缓存与数据库双写时的数据一致性？
 
     对于缓存和数据库的操作，主要有以下两种方式。
     1. 先删缓存，再更新数据库
@@ -330,7 +292,7 @@
             反过来，如果是删除的话，就算数据库更新了 1000 次，那么也只是做了 1 次缓存删除，
             只有当缓存真正被读取的时候才去数据库加载。
 
-# <a name="19">Redis 如何实现异步队列？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 如何实现异步队列？
 
     一般使用 list 结构作为队列，rpush 生产消息，lpop 消费消息。当 lpop 没有消息的时候，要适当 sleep 一会再重试。
     如果不用 sleep 呢？list 还有个指令叫 blpop，在没有消息的时候，它会阻塞住直到消息到来。
@@ -340,15 +302,15 @@
     pub/sub 有什么缺点？
     在消费者下线的情况下，生产的消息会丢失，改为使用专业的消息队列如 RocketMQ 等。
 
-# <a name="20">Redis 如何实现延时队列？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 如何实现延时队列？
 
     使用 sortedset，拿时间戳作为 score，消息内容作为 key 调用 zadd 来生产消息，消费者用 zrangebyscore 指令获取 N 秒之前的数据轮询进行处理。
 
-# <a name="21">Pipeline 有什么好处，为什么要用 Pipeline？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Pipeline 有什么好处，为什么要用 Pipeline？
 
     可以将多次 IO 往返的时间缩减为一次，并且减少 Redis 中的系统调用。
 
-# <a name="22">Redis 如何实现分布式锁？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 如何实现分布式锁？
 
     [参考链接](https://xiaomi-info.github.io/2019/12/17/redis-distributed-lock/)
 
@@ -391,7 +353,7 @@
         6. 集群
            主备切换、集群脑裂时会造成问题，使用 RedLock 算法
 
-# <a name="23">Redis 分布式锁和 ZooKeeper 区别？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 分布式锁和 ZooKeeper 区别？
 
     1. 实现难度上：Zookeeper >= Redis
        对于直接操纵底层 API 来说，实现难度都是差不多的，都需要考虑很多边界场景。但由于 Zk 的 ZNode 天然具有锁的属性，很简单。
@@ -409,7 +371,7 @@
        Zookeeper 就是为协调而生的，有严格的 Zab 协议控制数据的一致性，锁模型健壮。
        Redis 追求吞吐，可靠性上稍逊一筹。即使使用了 Redlock，也无法保证 100% 的健壮性，但一般的应用不会遇到极端场景，所以也被常用。
 
-# <a name="24">什么是缓存击穿，怎么解决</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 什么是缓存击穿，怎么解决
 
     缓存击穿的概念就是单个 key 并发访问过高，过期时导致所有请求直接打到 DB 上.
     这个和热 key 的问题比较类似，只是说的点在于过期导致请求全部打到 DB 上而已。
@@ -419,7 +381,7 @@
            同时去数据库查询数据，写入缓存，再返回给用户，这样后面的请求就可以从缓存中拿到数据了。
         2. 将过期时间组合写在 value 中，通过异步的方式不断的刷新过期时间，防止此类现象。
 
-# <a name="25">什么是缓存穿透，怎么解决</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 什么是缓存穿透，怎么解决
 
     缓存穿透是指查询不存在缓存中的数据，每次请求都会打到 DB，就像缓存不存在一样。
 
@@ -431,7 +393,7 @@
         理论上来说只要我们的数组长度够长，误判的概率就会越低，这种问题就根据实际情况来就好了。
         BloomFilter 用 Bitmap 实现，[参考链接](https://xiaomi-info.github.io/2019/12/17/redis-distributed-lock/)
 
-# <a name="26">什么是缓存雪崩，怎么解决</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 什么是缓存雪崩，怎么解决
 
     当某一时刻发生大规模的缓存失效的情况，比如你的缓存服务宕机了，会有大量的请求进来直接打到 DB 上，这样可能导致整个系统的崩溃，称为雪崩。
     雪崩和击穿、热 key 的问题不太一样，是指大规模的缓存都过期失效了。
@@ -441,18 +403,18 @@
         2. 限流，如果 Redis 宕机，可以限流，避免同时刻大量请求打崩 DB
         3. 二级缓存，同热 key 的方案
 
-# <a name="27">Redis 并发竞争 key 问题如何解决？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 并发竞争 key 问题如何解决？
 
     1. 分布式锁
     2. 消息队列
 
-# <a name="28">为什么 Redis 6.0 之后改用多线程？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 为什么 Redis 6.0 之后改用多线程？
 
     Redis 使用多线程并非是完全摒弃单线程。
     Redis 还是使用单线程模型来处理客户端的请求，只是使用多线程来处理数据的读写和协议解析，执行命令还是使用单线程。
     这样做的目的是因为 Redis 的性能瓶颈在于网络 IO 而非 CPU，使用多线程能提升 IO 读写的效率，从而整体提高 Redis 的性能。
 
-# <a name="29">Redis 的持久化方式</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 的持久化方式
 
     Redis 的持久化主要有两大机制，即 AOF(Append Only File) 日志和 RDB(Redis DataBase) 快照。
 
@@ -478,7 +440,7 @@
     Redis 4.0 之后新增混合持久化方式，混合持久化是结合了 RDB 和 AOF 的优点，在写入的时候，先把当前的数据以 RDB 的形式写入文件的开头，
     再将后续的操作命令以 AOF 的格式存入文件，这样既能保证 Redis 重启时的速度，又能减低数据丢失的风险。
 
-# <a name="30">Redis AOF 日志原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis AOF 日志原理
 
     AOF 日志是写后日志，“写后”的意思是 Redis 是先执行命令，把数据写入内存，然后才记录日志。
     为了避免额外的检查开销，Redis 在向 AOF 里面记录日志的时候，并不会先去对这些命令进行语法检查。
@@ -511,7 +473,7 @@
         然后，使用两个日志保证在重写过程中，新写入的数据不会丢失。
         而且，因为 Redis 采用额外的线程进行数据重写，所以，这个过程并不会阻塞主线程。
 
-# <a name="31">Redis RDB 快照</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis RDB 快照
 
     Redis 提供了两个命令来生成 RDB 文件，分别是 save 和 bgsave
         save：在主线程中执行，会导致阻塞；
@@ -529,7 +491,7 @@
            多个快照竞争有限的磁盘带宽，前一个快照还没有做完，后一个又开始做了，容易造成恶性循环。
         2. fork 这个创建过程本身会阻塞主线程，而且主线程的内存越大，阻塞时间越长。
 
-# <a name="32">Redis 事务机制</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 事务机制
 
     1. multi —— 开启事务
     2.命令入队列
@@ -549,7 +511,7 @@
            使用 AOF 恢复实例后，事务操作不会再被执行，从而保证原子性。
         只有当事务中使用的命令语法有误时，原子性得不到保证，在其它情况下，事务都可以原子性执行。
 
-# <a name="33">Redis 主从同步机制</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 主从同步机制
 
     主从模式是最简单的实现高可用的方案，核心就是主从同步。主从同步的原理如下：
 
@@ -577,7 +539,7 @@
            2. 主机宕机，宕机前有部分数据未能及时同步到从机，切换 IP 后还会引入数据不一致的问题，降低了系统的可用性
            3. 较难支持在线扩容
 
-# <a name="34">Redis 哨兵</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 哨兵
 
     哨兵其实就是一个运行在特殊模式下的 Redis 进程，主从库实例运行的同时，它也在运行。
     哨兵主要负责的就是三个任务：监控、选主（选择主库）和通知。
@@ -611,7 +573,7 @@
        缺点：
            除了支持主从自动切换外的主从模式的所有缺点
 
-# <a name="35">Redis 集群</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 集群
 
     从 Redis 3.0 开始，官方提供了一个名为 Redis Cluster 的方案，用于实现切片集群。
     Redis Cluster 采用哈希槽（Hash Slot），来处理数据和实例之间的映射关系。
@@ -668,6 +630,6 @@
 
     Redis Cluster 并不能保证数据的强一致性，在实际中集群在特定的条件下可能会丢失写操作，原因是集群采用异步复制。
 
-# <a name="36">Redis 中，sentinel 和 cluster 的区别和适用场景是什么？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# Redis 中，sentinel 和 cluster 的区别和适用场景是什么？
 
     哨兵是解决了 Redis 的高可用，而 cluster 则是解决了 Redis 的高并发。
