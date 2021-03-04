@@ -676,6 +676,9 @@
         1. [Go 语言设计与实现 7.2 垃圾收集器](https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/#722-%E6%BC%94%E8%BF%9B%E8%BF%87%E7%A8%8B)
         2. [Golang三色标记+混合写屏障GC模式全分析](https://zhuanlan.zhihu.com/p/334999060)
 
+        https://wudaijun.com/2017/12/gc-study/
+        https://zhuanlan.zhihu.com/p/264789260
+
         * Go V1.3之前标记-清除(mark and sweep)算法
         * Go V1.5的三色并发标记法
         * Go V1.8混合写屏障机制
