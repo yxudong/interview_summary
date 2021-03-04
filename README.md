@@ -1,6 +1,6 @@
 # interview_summary
 
-## 描述
+## 描述：
 
     面试知识点总结
 
