@@ -8,11 +8,11 @@
 
 ## 知识列表：
 - [x] Redis
-- [x] Go
 - [x] 计算机网络
+- [ ] Go
+- [ ] Python
 - [ ] 操作系统
 - [ ] Mysql
-- [ ] Python
 - [ ] Kafka
 - [ ] K8s
 - [ ] Elasticsearch
