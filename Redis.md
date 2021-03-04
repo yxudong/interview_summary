@@ -8,7 +8,7 @@
 &emsp;&emsp;<a href="#6">Redis Sorted Set 的实现原理</a><br>
 &emsp;&emsp;<a href="#7">Redis 压缩采用什么算法?</a><br>
 &emsp;&emsp;<a href="#8">Redis 中的 Bitmaps</a><br>
-&emsp;&emsp;<a href="#9">Redis 中的 HyperLogLog？</a><br>
+&emsp;&emsp;<a href="#9">Redis 中的 HyperLogLog</a><br>
 &emsp;&emsp;<a href="#10">Redis 客户端和服务器之间通信才用什么协议？</a><br>
 &emsp;&emsp;<a href="#11">Redis 过期策略</a><br>
 &emsp;&emsp;<a href="#12">Redis 内存淘汰机制</a><br>
@@ -171,7 +171,7 @@
         统计每天某一部电影是否被点播 统计每天有多少部电影被点播 统计每周/月/年有多少部电影被点播 统计年度哪部电影没有被点播
             日期作为 key，然后电影 id 为 offset，如果点播过就设置为 1
 
-# <a name="9">Redis 中的 HyperLogLog？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="9">Redis 中的 HyperLogLog</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     Redis HyperLogLog 是用来做基数统计的算法，优点是在输入元素的数量或者体积非常非常大时，计算基数所需的空间总是固定的、并且是很小的。
     但是，因为 HyperLogLog 只会根据输入元素来计算基数，而不会储存输入元素本身，所以 HyperLogLog 不能像集合那样，返回输入的各个元素。
