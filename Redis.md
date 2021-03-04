@@ -28,14 +28,15 @@
 &emsp;&emsp;<a href="#26">什么是缓存雪崩，怎么解决</a><br>
 &emsp;&emsp;<a href="#27">Redis 并发竞争 key 问题如何解决？</a><br>
 &emsp;&emsp;<a href="#28">为什么 Redis 6.0 之后改用多线程？</a><br>
-&emsp;&emsp;<a href="#29">Redis 的持久化方式</a><br>
-&emsp;&emsp;<a href="#30">Redis AOF 日志原理</a><br>
-&emsp;&emsp;<a href="#31">Redis RDB 快照</a><br>
-&emsp;&emsp;<a href="#32">Redis 事务机制</a><br>
-&emsp;&emsp;<a href="#33">Redis 主从同步机制</a><br>
-&emsp;&emsp;<a href="#34">Redis 哨兵</a><br>
-&emsp;&emsp;<a href="#35">Redis 集群</a><br>
-&emsp;&emsp;<a href="#36">Redis 中，sentinel 和 cluster 的区别和适用场景是什么？</a><br>
+&emsp;&emsp;<a href="#29">Redis 哪些地方用到了多线程，哪些地方是单线程？</a><br>
+&emsp;&emsp;<a href="#30">Redis 的持久化方式</a><br>
+&emsp;&emsp;<a href="#31">Redis AOF 日志原理</a><br>
+&emsp;&emsp;<a href="#32">Redis RDB 快照</a><br>
+&emsp;&emsp;<a href="#33">Redis 事务机制</a><br>
+&emsp;&emsp;<a href="#34">Redis 主从同步机制</a><br>
+&emsp;&emsp;<a href="#35">Redis 哨兵</a><br>
+&emsp;&emsp;<a href="#36">Redis 集群</a><br>
+&emsp;&emsp;<a href="#37">Redis 中，sentinel 和 cluster 的区别和适用场景是什么？</a><br>
 # <a name="0">Redis 和 Memecache 的区别是什么？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     1. Redis 不仅仅支持简单的 k/v 类型的数据，同时还提供 list，set，zset，hash 等数据结构的存储。Memecache 支持简单的数据类型 String
@@ -198,7 +199,7 @@
     2. 惰性删除，也就是说在你获取某个 key 的时候，Redis 会检查一下，这个 key 如果设置了过期时间那么是否过期，如果过期了此时就会删除。
 
     过期策略存在的问题，由于 Redis 定期删除是随机抽取检查，不可能扫描清除掉所有过期的 key 并删除，某些 key 由于未被请求，惰性删除也未触发。
-    这样 Redis 的内存占用会越来越高。此时就需要内存淘汰机制
+    这样 Redis 的内存占用会越来越高，此时就需要内存淘汰机制。
 
 # <a name="12">Redis 内存淘汰机制</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
@@ -452,7 +453,13 @@
     Redis 还是使用单线程模型来处理客户端的请求，只是使用多线程来处理数据的读写和协议解析，执行命令还是使用单线程。
     这样做的目的是因为 Redis 的性能瓶颈在于网络 IO 而非 CPU，使用多线程能提升 IO 读写的效率，从而整体提高 Redis 的性能。
 
-# <a name="29">Redis 的持久化方式</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="29">Redis 哪些地方用到了多线程，哪些地方是单线程？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+    1. 接收请求参数
+    2. 解析请求参数
+    3. 请求响应，即将结果返回给client
+
+# <a name="30">Redis 的持久化方式</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     Redis 的持久化主要有两大机制，即 AOF(Append Only File) 日志和 RDB(Redis DataBase) 快照。
 
@@ -478,7 +485,7 @@
     Redis 4.0 之后新增混合持久化方式，混合持久化是结合了 RDB 和 AOF 的优点，在写入的时候，先把当前的数据以 RDB 的形式写入文件的开头，
     再将后续的操作命令以 AOF 的格式存入文件，这样既能保证 Redis 重启时的速度，又能减低数据丢失的风险。
 
-# <a name="30">Redis AOF 日志原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="31">Redis AOF 日志原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     AOF 日志是写后日志，“写后”的意思是 Redis 是先执行命令，把数据写入内存，然后才记录日志。
     为了避免额外的检查开销，Redis 在向 AOF 里面记录日志的时候，并不会先去对这些命令进行语法检查。
@@ -511,7 +518,7 @@
         然后，使用两个日志保证在重写过程中，新写入的数据不会丢失。
         而且，因为 Redis 采用额外的线程进行数据重写，所以，这个过程并不会阻塞主线程。
 
-# <a name="31">Redis RDB 快照</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="32">Redis RDB 快照</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     Redis 提供了两个命令来生成 RDB 文件，分别是 save 和 bgsave
         save：在主线程中执行，会导致阻塞；
@@ -529,7 +536,7 @@
            多个快照竞争有限的磁盘带宽，前一个快照还没有做完，后一个又开始做了，容易造成恶性循环。
         2. fork 这个创建过程本身会阻塞主线程，而且主线程的内存越大，阻塞时间越长。
 
-# <a name="32">Redis 事务机制</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="33">Redis 事务机制</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     1. multi —— 开启事务
     2.命令入队列
@@ -549,7 +556,7 @@
            使用 AOF 恢复实例后，事务操作不会再被执行，从而保证原子性。
         只有当事务中使用的命令语法有误时，原子性得不到保证，在其它情况下，事务都可以原子性执行。
 
-# <a name="33">Redis 主从同步机制</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="34">Redis 主从同步机制</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     主从模式是最简单的实现高可用的方案，核心就是主从同步。主从同步的原理如下：
 
@@ -577,7 +584,7 @@
            2. 主机宕机，宕机前有部分数据未能及时同步到从机，切换 IP 后还会引入数据不一致的问题，降低了系统的可用性
            3. 较难支持在线扩容
 
-# <a name="34">Redis 哨兵</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="35">Redis 哨兵</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     哨兵其实就是一个运行在特殊模式下的 Redis 进程，主从库实例运行的同时，它也在运行。
     哨兵主要负责的就是三个任务：监控、选主（选择主库）和通知。
@@ -611,7 +618,7 @@
        缺点：
            除了支持主从自动切换外的主从模式的所有缺点
 
-# <a name="35">Redis 集群</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="36">Redis 集群</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     从 Redis 3.0 开始，官方提供了一个名为 Redis Cluster 的方案，用于实现切片集群。
     Redis Cluster 采用哈希槽（Hash Slot），来处理数据和实例之间的映射关系。
@@ -668,6 +675,6 @@
 
     Redis Cluster 并不能保证数据的强一致性，在实际中集群在特定的条件下可能会丢失写操作，原因是集群采用异步复制。
 
-# <a name="36">Redis 中，sentinel 和 cluster 的区别和适用场景是什么？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="37">Redis 中，sentinel 和 cluster 的区别和适用场景是什么？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     哨兵是解决了 Redis 的高可用，而 cluster 则是解决了 Redis 的高并发。
