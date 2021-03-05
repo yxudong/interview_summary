@@ -15,7 +15,7 @@ Knowledge list
 
 - [x] Redis
 - [x] 计算机网络
-- [ ] Go
+- [x] Go
 - [ ] Python
 - [ ] 操作系统
 - [ ] Mysql
