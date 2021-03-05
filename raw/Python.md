@@ -16,7 +16,7 @@
     容量最小为 8。
 
 <p align='center'>
-    <img src='./images/Python-Dict 底层结构.png'>
+    <img src='images/Python-Dict 底层结构.png'>
 </p>
 
     split-table dictionaries（分离表） vs combined-table dictionaries（结合表）：

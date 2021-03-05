@@ -608,7 +608,7 @@
        客户端和哨兵之间的事件通知通过哨兵自身的 pub/sub 功能实现
 
 <p align='center'>
-    <img src='./images/Redis 哨兵.jpg'>
+    <img src='images/Redis 哨兵.jpg'>
 </p>
 
     优缺点：
