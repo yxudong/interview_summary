@@ -61,17 +61,18 @@
     为了避免大量对象的创建和销毁，Python 将那些使用频率高的整数预先创建好，
     这些预先创建好的整数会放在一个静态数组里面，称为小整数对象池。如果需要使用的话会直接拿来用，而不用重新创建。
 
-# def func(a,b=[]) 这种写法有什么坑？
+# def func(a, b=[]) 这种写法有什么坑？
 
     ```
-    def func(a,b = []):
+    def func(a, b=[]):
         b.append(1)
-        print(a,b)
+        print(a, b)
 
     func(a=2)
     func(2)
     func(2)
     ```
+
     '''
     2 [1]
     2 [1, 1]
@@ -95,27 +96,105 @@
 
     前者传递引用，后者是拷贝
 
-# 什么是面向对象的mro
-# 面向对象深度优先和广度优先是什么？
-# 经典类和新式类
+# Python 中的 MRO
 
+    参考：
+        1. [Python的方法解析顺序(MRO)](https://hanjianwei.com/2013/07/25/python-mro/)
+        2. [Python多重继承排序原理（MRO算法解析，拓扑排序，C3算法）](https://www.pianshen.com/article/6817106786/)
 
+    在方法调用时就需要对当前类和基类进行搜索以确定方法所在的位置。
+    而搜索的顺序就是所谓的「方法解析顺序」（Method Resolution Order，或 MRO）。
 
+    Python 有三种不同的 MRO：
+        1. 经典类（classic class）的深度遍历。
+        2. Python 2.2 的新式类（new-style class）预计算。
+        3. Python 2.3 的新式类的 C3 算法。它也是 Python 3 唯一支持的方式。
 
-
-
-
-
-
-
-
-
-
-
+    注意：
+        1. 新式类中的算法（指上面的第 3 种情况）并不完全是广度优先算法，而是 C3 算法。
+        2. C3 算法不完全和拓扑排序相等，而是在拓扑排序的基础上，考虑了基类的出现顺序。
 
 # 多个装饰器的执行顺序
+
+    参考：
+        1. [理解 Python 装饰器看这一篇就够了](https://foofish.net/python-decorator.html)
+
+    ```
+    @a
+    @b
+    @c
+    def f ():
+        pass
+
+    # 它的执行顺序是从里到外，最先调用最里层的装饰器，最后调用最外层的装饰器，它等效于
+    # f = a(b(c(f)))
+    ```
+
+# 类装饰器
+
+    使用类装饰器主要依靠类的__call__方法，当使用 @ 形式将装饰器附加到函数上时，就会调用此方法。
+
+    ```
+    class Foo(object):
+        def __init__(self, func):
+            self._func = func
+
+        def __call__(self):
+            print ('class decorator runing')
+            self._func()
+            print ('class decorator ending')
+
+    @Foo
+    def bar():
+        print ('bar')
+
+    bar()
+    ```
+
 # 静态方法和类方法，普通方法
+
+    参考：
+        1. [Python类的静态方法和类方法区别](https://zhuanlan.zhihu.com/p/21101992)'
+
+    实例方法只能被实例对象调用（Python3 中，如果类调用实例方法，需要显示的传self, 也就是实例对象自己)，
+    静态方法(由@staticmethod装饰的方法)、类方法(由@classmethod装饰的方法)，可以被类或类的实例对象调用。
+
+    实例方法，第一个参数必须要默认传实例对象，一般习惯用 self。
+    静态方法，参数没有要求。
+    类方法，第一个参数必须要默认传类，一般习惯用 cls。
+
+    类方法可以用在模拟定义多个构造函数的情况。由于 Python 类中只能有一个初始化方法，不能按照不同的情况初始化类。
+    ```
+    class Book(object):
+
+        def __init__(self, title):
+            self.title = title
+
+        @classmethod
+        def create(cls, title):
+            book = cls(title=title)
+            return book
+
+    book1 = Book("python")
+    book2 = Book.create("python and django")
+    print(book1.title)
+    print(book2.title)
+    ```
+
 # Python 的元类
+
+
+
+
+
+
+
+
+
+
+
+
+
 # __init__, __new__ 区别
 # 怎么理解 __call__
 # Python 垃圾回收机制
