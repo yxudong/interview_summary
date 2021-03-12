@@ -545,7 +545,7 @@
     接收和发送数据都需要先获取锁。
 
 <p align='center'>
-    <img src='./images/操作 channel 结果.jpg'>
+    <img src='./images/Go-操作 channel 结果.jpg'>
 </p>
 
 # Goroutine 原理（调度器）
@@ -600,7 +600,7 @@
         每个 M 都代表了1个内核线程，OS 调度器负责把内核线程分配到 CPU 的核上执行。
 
 <p align='center'>
-    <img src='./images/G-P-M 模型的结构.jpg'>
+    <img src='./images/Go-G-P-M 模型的结构.jpg'>
 </p>
 
     有关 P 和 M 的个数问题：
@@ -644,7 +644,7 @@
         可以认为调度循环永远都不会返回。
 
 <p align='center'>
-    <img src='./images/golang-scheduler-loop.png'>
+    <img src='./images/Go-scheduler loop.png'>
 </p>
 
         调度时机：
@@ -817,5 +817,5 @@
         https://zhuanlan.zhihu.com/p/213712219
 
 <p align='center'>
-    <img src='./images/Go Primitive vs Channel.jpg'>
+    <img src='./images/Go-Primitive vs Channel.jpg'>
 </p>
