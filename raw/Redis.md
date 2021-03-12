@@ -81,12 +81,12 @@
 
 # Redis Hash 的实现原理
 
-    Redis 的哈希对象的底层存储可以使用 ZipList 和 hashtable。
+    Redis 的哈希对象的底层存储可以使用 ZipList 和 HashTable。
     当 Hash 对象可以同时满足一下两个条件时，哈希对象使用 ZipList 编码：
         1. 哈希对象保存的所有键值对的键和值的字符串长度都小于 64 字节（可以通过配置文件修改）
         2. 哈希对象保存的键值对数量小于 512 个（可以通过配置文件修改）
 
-    hashtable 编码的哈希表对象底层使用字典数据结构。
+    HashTable 编码的哈希表对象底层使用字典数据结构。
     Redis 解决哈希冲突的方式，是链式哈希。
     这里存在一个问题，哈希冲突链上的元素只能通过指针逐一查找再操作。
     如果哈希表里写入的数据越来越多，哈希冲突可能也会越来越多，会导致某些哈希冲突链过长，进而导致这个链上的元素查找耗时长。
@@ -102,13 +102,13 @@
     Redis 将所有的 rehash 的操作分成多步进行，直到都 rehash 完成，
 
 <p align='center'>
-    <img src='./images/Redis-hashtable.jpg'>
+    <img src='./images/Redis-HashTable.jpg'>
 </p>
 
 # Redis Set 的实现原理
 
-    Set 集合采用 intset（整数集合）和 hashtable 两种方式来实现，当满足以下两个条件的时候，采用 intset 实现，
-    一旦有一个条件不满足时则采用 hashtable 来实现：
+    Set 集合采用 intset（整数集合）和 HashTable 两种方式来实现，当满足以下两个条件的时候，采用 intset 实现，
+    一旦有一个条件不满足时则采用 HashTable 来实现：
         1. Set 集合中的所有元素都为整数
         2. Set 集合中的元素个数不大于 512（可以通过配置文件修改）
 
