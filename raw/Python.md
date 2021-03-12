@@ -196,7 +196,7 @@
     type, object, class, 和 instance 关系：
 
 <p align='center'>
-    <img src='./images/Python-type, object, class, 和 instance（1）.png'>
+    <img src='./images/Python-type, object, class 和 instance（1）.png'>
 </p>
         object 在这张图中的角色很重要，它既是所有类的基类（base class）（所有类都继承它），
         也是 type 类（注意 type 也是类）的实例。
@@ -209,7 +209,7 @@
         它虽然是类的类，但“类”这个身份也恰恰让它不得不符合类的基本形式。上面这张图还可以画成这种形式：
 
 <p align='center'>
-    <img src='./images/Python-type, object, class, 和 instance（2）.png'>
+    <img src='./images/Python-type, object, class 和 instance（2）.png'>
 </p>
 
     用途：
