@@ -114,43 +114,6 @@
         1. 新式类中的算法（指上面的第 3 种情况）并不完全是广度优先算法，而是 C3 算法。
         2. C3 算法不完全和拓扑排序相等，而是在拓扑排序的基础上，考虑了基类的出现顺序。
 
-# 多个装饰器的执行顺序
-
-    参考：
-        1. [理解 Python 装饰器看这一篇就够了](https://foofish.net/python-decorator.html)
-
-    ```
-    @a
-    @b
-    @c
-    def f ():
-        pass
-
-    # 它的执行顺序是从里到外，最先调用最里层的装饰器，最后调用最外层的装饰器，它等效于
-    # f = a(b(c(f)))
-    ```
-
-# 类装饰器
-
-    使用类装饰器主要依靠类的__call__方法，当使用 @ 形式将装饰器附加到函数上时，就会调用此方法。
-
-    ```
-    class Foo(object):
-        def __init__(self, func):
-            self._func = func
-
-        def __call__(self):
-            print ('class decorator runing')
-            self._func()
-            print ('class decorator ending')
-
-    @Foo
-    def bar():
-        print ('bar')
-
-    bar()
-    ```
-
 # 静态方法和类方法，普通方法
 
     参考：
@@ -318,6 +281,161 @@
        Timsort 是结合了合并排序（merge sort）和插入排序（insertion sort）而得出的排序算法，它在现实中有很好的效率。
        该算法找到数据中已经排好序的块-分区，每一个分区叫一个 run，然后按规则合并这些 run。
 
+# xrange() 和 range() 的区别
+
+    Python2 中 xrange() 返回生成器，range() 返回 list，
+    Python3 中没有 xrange()，只有 range()，并且返回生成器。
+
+# Python 中的 GIL
+
+    参考：
+        1. [Python GIL(Global Interpreter Lock)](https://www.cnblogs.com/hwlong/p/9002779.html)
+        2. [谈谈python的GIL、多线程、多进程](https://zhuanlan.zhihu.com/p/20953544)
+
+    首先需要明确的一点是 GIL 并不是 Python 的特性，它是在实现 Python 解析器（CPython）时所引入的一个概念。
+    因为 CPython 是大部分环境下默认的 Python 执行环境。所以在很多人的概念里 CPython 就是 Python。
+
+    在 Python 多线程下，每个线程的执行方式：
+        1. 获取 GIL
+        2. 执行代码直到 sleep 或者是 Python 虚拟机将其挂起。
+        3. 释放 GIL
+    可见，某个线程想要执行，必须先拿到 GIL，我们可以把 GIL 看作是“通行证”，并且在一个 Python 进程中，GIL只有一个。
+    拿不到通行证的线程，就不允许进入 CPU 执行。
+
+    为什么会有 GIL：
+        实现简单，保证内存数据线程安全
+
+    怎么解决：
+        对于 CPU 密集型代码，使用多进程，或者改为 C 实现
+        对于 IO 密集型代码，使用多线程
+
+# Python 中的 __dict__ 和 dir()
+
+    参考：
+        1. [what's the biggest difference between dir and __dict__ in python](https://stackoverflow.com/questions/14361256/whats-the-biggest-difference-between-dir-and-dict-in-python)
+
+    dir() 不仅查找对象的 __dict__（有时甚至不存在），它还会根据对象的继承关系提供所有可用属性。
+    __dict__ 只是获取实例的“本地”属性集，并不包含该实例的所有可用属性。
+
+# list() 和 [] 哪个效率更快？
+
+    创建空列表时，[] 要比 list() 快。
+
+    对于 []，它是 Python 中的一组字面量（literal），像数字之类的字面量一样，表示确切的固定值。
+    也就是说，Python 在解析到它时，就知道它要表示一个列表，因此会直接调用解释器中构建列表的方法来创建列表。
+
+    对于 list()，“list”只是一个普通的名称，并不是字面量，也就是说解释器一开始并不认识它。
+    因此，解释器的第一步是要找到这个名称（对应 LOAD_NAME）。它会按照一定的顺序，
+    在各个作用域中逐一查找（局部作用域--全局作用域--内置作用域），直到找到为止，找不到则会抛出NameError。
+    第二步是把这个名称当作可调用对象来调用，即把它当成一个函数进行调用（对应 CALL_FUNCTION）。
+    因此，list() 在创建列表时，需要经过名称查找与函数调用两个步骤，才能真正开始创建列表。
+
+    因为 list() 涉及的执行步骤更多，因此它比 [] 要慢一些。
+
+# 列表推导式，字典推导式，生成器推导式
+
+    列表推导式：
+        ```
+        # 使用 [] 生成 list
+        a = [i for i in range(10)]
+        # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+        # 使用 () 生成 generator
+        a = (i for i in range(10))
+        # <generator object <genexpr> at 0x00000281C61DA840>
+        ```
+
+    字典推导式：
+        ```
+        a = {'a': 1, 'b': 2, 'c': 3}
+        b = {v: k for k, v in a.items()}
+        # {1: 'a', 2: 'b', 3: 'c'}
+        ```
+
+    集合推导式：
+        ```
+        a = {x**2 for x in [1, 1, 2]}
+        # {1, 4}
+        ```
+
+# Python 装饰器
+
+    参考：
+        1. [理解 Python 装饰器看这一篇就够了](https://foofish.net/python-decorator.html)
+        2. [一文看懂Python系列之装饰器(decorator)(工作面试必读)](https://zhuanlan.zhihu.com/p/51158386)
+
+    装饰器是利用闭包原理，区别是装饰器在闭包中传入的参数是函数，而不是变量。
+
+    简单装饰器：
+        ```
+        def use_logging(func):
+            def wrapper():
+                logging.warn("%s is running" % func.__name__)
+                return func()
+
+            return wrapper
+
+        @use_logging
+        def foo():
+            print("i am foo")
+
+        # foo = use_logging(foo)
+        foo()
+        ```
+
+    带参数的装饰器:
+        ```
+        def use_logging(level):
+            def decorator(func):
+                def wrapper(*args, **kwargs):
+                    if level == "warn":
+                        logging.warn("%s is running" % func.__name__)
+                    elif level == "info":
+                        logging.info("%s is running" % func.__name__)
+                    return func(*args)
+                return wrapper
+
+            return decorator
+
+        # @use_logging(level="warn") 等价于 @decorator
+        @use_logging(level="warn")
+        def foo(name='foo'):
+            print("i am %s" % name)
+
+        foo()
+        ```
+
+    多个装饰器的执行顺序：
+        ```
+        @a
+        @b
+        @c
+        def f ():
+            pass
+
+        # 它的执行顺序是从里到外，最先调用最里层的装饰器，最后调用最外层的装饰器，它等效于
+        # f = a(b(c(f)))
+        ```
+
+    类装饰器：
+        使用类装饰器主要依靠类的__call__方法，当使用 @ 形式将装饰器附加到函数上时，就会调用此方法。
+
+        ```
+        class Foo(object):
+            def __init__(self, func):
+                self._func = func
+
+            def __call__(self):
+                print ('class decorator runing')
+                self._func()
+                print ('class decorator ending')
+
+        @Foo
+        def bar():
+            print ('bar')
+
+        bar()
+        ```
 
 
 
@@ -333,19 +451,6 @@
 
 
 
-
-
-
-
-
-### xrange 和 range 的区别
-
-    Python2 中：
-        range(start,end,step) 返回一个列表，返回的结果是可迭代对象，但不是迭代器。iter()转化为列表迭代器。
-        xrange() 返回的是一个序列，他也是可迭代对象，但不是迭代器。可以通过iter()方法转化为范围迭代器。经过iter()函数之后，才能使用next（）函数取出其中的值。
-    Python3 中：
-        在 python3 中没有 xrange,只有 range()。range() 和python2 中的xrange()一样。
-        range() 是支持切片的，而python2 中的xrange()不支持切片。
 
 # __prepare__() 方法
 # __init__, __new__ 区别
@@ -354,20 +459,16 @@
 # await 和 async 等关键字，版本，作用
 # tornado 实现原理
 # 可变对象和不可变对象
-# GIL
 # 怎么实现单例
 # super 作用
-# 列表推导式，字典推导式，生成器推导式
+# 生成器原理
 # list() 和 [] 哪个效率更快？
 # property 作用
-# __dict__ 内容
 # slot 作用
 # 介绍一下Python 锁？
 # 什么是python的生成器?
-# 装饰器的写法以及应用场景。
 # 什么是反射？以及应用场景？
 # *arg和**kwarg作用
-# Python 装饰器的原理
 # 一行代码写出乘法表
     print("\n".join([" ".join(["%s*%s=%-2s"%(j,i,j*i) for j in range(1,i+1)]) for i in range(1,10)]))
 # 代码题:实现一个生产者消费者

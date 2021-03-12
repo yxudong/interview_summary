@@ -125,37 +125,6 @@ https://www.jiqizhixin.com/articles/2019-04-10-15
 	原因是：每个进程有各自独立的GIL，互不干扰，这样就可以真正意义上的并行执行，所以在python中，多进程的执行效率优于多线程(仅仅针对多核CPU而言)。
 	所以我们能够得出结论：多核下，想做并行提升效率，比较通用的方法是使用多进程，能够有效提高执行效率
 
-### 16、怎么实现元类
-	定义：
-	元类是类的类，元类的主要目的就是为了当创建类时能够自动地改变类。通过元类就可以创建类对象，通常我们创建的类，是type作为元类。
-	type是python的内建元类,除此之外可以通过__metaclass__属性定义元类
-	元类如何创建类
-	在类被定义的时候，python会做如下操作，在定义的类中去找__meataclass__，如果有，则在内存中通过metaclass创建类
-	如果没有，就到父类中去找meataclass属性，如果没有则到模块层次去找metaclass,都没有找到，python就会用内置的type来创建类
-	通过metaclass创建元类的方法如下：
-	# 1、通过函数创建元类：
-	__metaclass__=func()
-	func()的返回是type(name,bases,dict)元类会自动将你通常传给‘type’的参数作为自己的参数传入
-	# 2、使用class当作元类
-	 
-	 2.1 定义类继承type，重写new并返回type()
-	
-	__new__ 是在__init__之前被调用的特殊方法，__new__是用来创建对象并返回之的方法，__new_()是一个类方法
-	而__init__只是用来将传入的参数初始化给对象，它是在对象创建之后执行的方法。
-	你很少用到__new__，除非你希望能够控制对象的创建。这里，创建的对象是类，我们希望能够自定义它，所以我们这里改写__new__
-	```
-	class UpperAttrMetaClass(type):
-    def __new__(upperattr_metaclass, future_class_name, future_class_parents, future_class_attr):
-        attrs = ((name, value) for name, value in future_class_attr.items() if not name.startswith('__'))
-        uppercase_attr = dict((name.upper(), value) for name, value in attrs)
-        return type(future_class_name, future_class_parents, uppercase_attr)#返回一个对象，但同时这个对象是一个类
-	```
-	 2.2定义类继承type,重写new，返回type.__new__() ;也就是改写父类的new方法
-	 2.3 定义类继承type,重写new，返回super().__new__() ;让写法更清晰
-	
-
-
-
 ### 17、super 作用
 
 python中允许多继承，但是多继承的公共父类在执行的时候会执行多次，使用super()机制就可以让公共父类只执行一次，执行顺序是按照MRO来执行的。
@@ -179,50 +148,6 @@ def super(cls, inst):
 使用：
 Python3.x 和 Python2.x 的一个区别是: Python 3 可以使用直接使用 super().xxx 代替 super(Class, self).xxx 
 
-### 18、列表推导式，字典推导式，生成器推导式
-列表推导式：
-```
-variable = [out_exp_res for out_exp in input_list if out_exp == 2]
-
-out_exp_res：列表生成元素表达式，可以是有返回值的函数。
-for out_exp in input_list：迭代input_list将out_exp传入out_exp_res表达式中。
-if out_exp == 2：根据条件过滤哪些值可以。
-```
-
-
-字典推导式:
-
-
-```
-{ key_expr: value_expr for value in collection if condition }
-```
-生成器表达式：
-列表推导式的[]换为()
-```
-variable = (out_exp_res for out_exp in input_list if out_exp == 2)
-```
-
-### 19、list() 和 [] 哪个效率更快？
-https://xie.infoq.cn/article/0fe5e939dee483adb0d0e266a
-	1. 哪一个更快：
-		[] 是 list() 的三倍快
-		对于第一个问题，使用timeit模块的 timeit() 函数就能简单地测算出来：
-		创建空列表时，[] 要比 list() 快不少。
-	2. 为什么更快？
-		list() 比 [] 执行步骤多
-		可以使用dis模块的 dis() 函数，看看两者执行的字节码有何差别：
-		[] 的字节码有两条指令（BUILDLIST 与 RETURNVALUE），而 list() 的字节码有三条指令（LOADNAME、CALLFUNCTION 与 RETURN_VALUE）。
-		这些指令意味着什么呢？该如何理解它们呢？
-		首先，对于 []，它是 Python 中的一组字面量（literal），像数字之类的字面量一样，表示确切的固定值。
-		也就是说，Python 在解析到它时，就知道它要表示一个列表，因此会直接调用解释器中构建列表的方法（对应 BUILD_LIST ），来创建列表，所以是一步到位。
-		而对于 list()，“list”只是一个普通的名称，并不是字面量，也就是说解释器一开始并不认识它。
-		因此，解释器的第一步是要找到这个名称（对应 LOAD_NAME）。它会按照一定的顺序，在各个作用域中逐一查找（局部作用域--全局作用域--内置作用域），直到找到为止，找不到则会抛出NameError。
-		解释器看到“list”之后是一对圆括号，因此第二步是把这个名称当作可调用对象来调用，即把它当成一个函数进行调用（对应 CALL_FUNCTION）。
-		因此，list() 在创建列表时，需要经过名称查找与函数调用两个步骤，才能真正开始创建列表（注：CALLFUNCTION 在底层还会有一些函数调用过程，才能走到跟 BUILDLIST 相通的逻辑，此处我们忽略不计）。
-		至此，我们就可以回答前面的问题了：因为 list() 涉及的执行步骤更多，因此它比 [] 要慢一些。
-﻿
-	3. list() 的速度能否提升呢？
-	    3.9新版本中运行 list() 一千万次，耗时大概在 1 秒左右，也就是 [] 运行耗时的 2 倍，相比于前面接近 4 倍的数据，当前版本总体上是提升了不少。
 ### 20、property 作用
 
 Python内置的@property装饰器作用：
@@ -244,16 +169,6 @@ class Student(object):
         return 2014 - self._birth
 ```
 如上，birth是可读写属性，age是可读属性
-### 21、__dict__ 内容
-
-在 Python 类的内部，无论是类属性还是实例属性，都是以字典的形式进行存储的，其中属性名作为键，而值作为该键对应的值。
-为了方便用户查看类中包含哪些属性，Python 类提供了 __dict__ 属性。
-需要注意的一点是，该属性可以用类名或者类的实例对象来调用，用类名直接调用 __dict__，会输出该由类中所有类属性组成的字典；
-而使用类的实例对象调用 __dict__，会输出由类中所有实例属性组成的字典。
-总结：
-   1） 内置的数据类型没有__dict__属性
-　　2） 每个类有自己的__dict__属性，就算存着继承关系，父类的__dict__ 并不会影响子类的__dict__
-　　3） 对象也有自己的__dict__属性， 存储self.xxx 信息，父子类对象公用__dict__
 
 ### 22、slots 作用
 	__slots__是用来声明实例的属性，普通的声明方法是__dict__
@@ -313,33 +228,6 @@ python的四个重要内置函数：getattr、hasattr、delattr和setattr较为�
 
 应用场景：
 在我们做接口自动化的时候,需要通过不同的请求方式,调用不同的函数
-### 27、面向对象深度优先和广度优先是什么？
-
-Python的类可以继承多个类，Python的类如果继承了多个类，那么其寻找方法的方式有两种
-当类是经典类时，多继承情况下，会按照深度优先方式查找  py3
-当类是新式类时，多继承情况下，会按照广度优先方式查找  py2
-简单点说就是：经典类是纵向查找，新式类是横向查找
-经典类和新式类的区别就是，在声明类的时候，新式类需要加上object关键字。在python3中默认全是新式类
-
-### 28、经典类和新式类
-在Python 2及以前的版本中，由任意内置类型派生出的类（只要一个内置类型位于类树的某个位置），都属于“新式类”，都会获得所有“新式类”的特性；反之，即不由任意内置类型派生出的类，则称之为“经典类”。
-
-“新式类”和“经典类”的区分在Python 3之后就已经不存在，在Python 3.x之后的版本，因为所有的类都派生自内置类型object(即使没有显示的继承object类型)，即所有的类都是“新式类”。
-区别：
-1.继承顺序的区别
-当类是经典类时，多继承情况下，会按照深度优先方式查找  py3
-当类是新式类时，多继承情况下，会按照广度优先方式查找  py2
-2.类实例类型的区别
-在经典类中，所有的类都是classobj类型，而类的实例都是instance类型。类与实例只有通过__class__属性进行关联。这样在判断实例类型时，就会造成不便：所有的实例都是instance类型。
-这个问题在Python 3之后就不复存在了，因为Python3中所有的类都是新式类，新式类中类与类型已经统一：类实例的类型是这个实例所创建自的类（通常是和类实例的__class__相同），而不再是Python 2.x版本中的“instance”实例类型。
-### 29、a=[1,2,3,4,5]，b=a和b=a[:]，有区别么？
-b=a与b=a[:]的区别
-b=a将两者指向同一个对象
-而b=a[:]会创建一个新的与a完全相同的对象，但是与a并不指向同一对象。
-在计算机中，不同的对象即不同的内存地址。
-可理解为：b=a将创建a与b两个快捷方式并指向同一文件；
-而b=a[:]先将a指向的文件复制一份作为副本，然后创建一个指向该副本的快捷方式b。
-二者不同表现为当两者指向同一对象时，改变其中任意一个，都会改变对象的值，也就是同时改变a，b的值。
 
 
 ### 30、 *arg和**kwarg作用
@@ -348,15 +236,6 @@ b=a将两者指向同一个对象
 如果我们不知道要往函数中传入多少个关键词参数，或者想传入字典的值作为关键词参数时，那就要使用**kwargs；
 *args用来将参数打包成tuple（元组）给函数体调用
 **kwargs 打包关键字参数成dict（字典）给函数体调用
-
-### 31、xrange和range的区别
-
-在python2 中：
-	range(start,end,step)返回一个列表，返回的结果是可迭代对象，但不是迭代器。iter()转化为列表迭代器。
-	xrange()返回的是一个序列，他也是可迭代对象，但不是迭代器。可以通过iter()方法转化为范围迭代器。经过iter()函数之后，才能使用next（）函数取出其中的值。
-python3中：
-	在python3 中没有xrange,只有range()。range（） 和python2 中的xrange()一样。
-	range() 是支持切片的，而python2 中的xrange()不支持切片。
 
 ### 35、Python 装饰器的原理
 https://www.cnblogs.com/liyasen/p/6477817.html

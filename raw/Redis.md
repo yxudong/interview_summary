@@ -61,16 +61,28 @@
     没有维护双向指针：prev next，而是存储上一个 entry（可以理解为一个数据）的长度和 当前 entry 的长度，通过长度推算下一个元素在什么地方。
     最大的缺点是是连锁更新问题，以时间换空间。
 
+<p align='center'>
+    <img src='./images/Redis-ZipList.png'>
+</p>
+
     LinkedList 是由一系列不连续的内存块通过指针连接起来的双向链表。
     缺点是它的内存开销比较大。首先，它在每个节点上除了要保存数据之外，还要额外保存两个指针。
     其次，它的各个节点是单独的内存块，地址不连续，节点多了容易产生内存碎片。
 
+<p align='center'>
+    <img src='./images/Redis-LinkedList.png'>
+</p>
+
     QuickList 是一个 ZipList 组成的双向链表。
+
+<p align='center'>
+    <img src='./images/Redis-QuickList.png'>
+</p>
 
 # Redis Hash 的实现原理
 
-    Redis 的哈希对象的底层存储可以使用 ziplist 和 hashtable。
-    当 Hash 对象可以同时满足一下两个条件时，哈希对象使用 ziplist 编码：
+    Redis 的哈希对象的底层存储可以使用 ZipList 和 hashtable。
+    当 Hash 对象可以同时满足一下两个条件时，哈希对象使用 ZipList 编码：
         1. 哈希对象保存的所有键值对的键和值的字符串长度都小于 64 字节（可以通过配置文件修改）
         2. 哈希对象保存的键值对数量小于 512 个（可以通过配置文件修改）
 
@@ -88,6 +100,10 @@
       3. 释放哈希表 1 的空间。
     在第 2 步 Redis 不是一次性把全部数据 rehash 成功，这样会导致 Redis 对外服务停止，Redis 内部为了处理这种情况采用渐进式的 rehash。
     Redis 将所有的 rehash 的操作分成多步进行，直到都 rehash 完成，
+
+<p align='center'>
+    <img src='./images/Redis-hashtable.jpg'>
+</p>
 
 # Redis Set 的实现原理
 
@@ -528,7 +544,7 @@
     5. master 发送缓存中的写命令到 slave，slave 执行
 
 <p align='center'>
-    <img src='./images/Redis 主从同步机制.jpg'>
+    <img src='./images/Redis-主从同步机制.jpg'>
 </p>
 
     上面写的命令是 sync，但是在 Redis 2.8 版本之后已经使用 psync 来替代 sync 了，
@@ -569,7 +585,7 @@
        客户端和哨兵之间的事件通知通过哨兵自身的 pub/sub 功能实现
 
 <p align='center'>
-    <img src='./images/Redis 哨兵.jpg'>
+    <img src='./images/Redis-哨兵.jpg'>
 </p>
 
     优缺点：
