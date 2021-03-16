@@ -454,34 +454,81 @@
     # 1*9=9 2*9=18 3*9=27 4*9=36 5*9=45 6*9=54 7*9=63 8*9=72 9*9=81
     ```
 
-
-
-
-
-
-
-
-
-
-
-
 # Python 参数传递
-http://winterttr.me/2015/10/24/python-passing-arguments-as-value-or-reference/
-# __prepare__() 方法
+    参考：
+        1. [Python的函数参数传递：传值？引用？](http://winterttr.me/2015/10/24/python-passing-arguments-as-value-or-reference/)
+        2. [关于Python中参数传递和作用域的问题？ - Coldwings的回答 - 知乎](https://www.zhihu.com/question/58539447/answer/157433659)
+
+    在 Python 中，类型属于对象，变量是没有类型的。
+    严格意义上来说 Python 传参策略既不是 call-by-reference，也不是 call-by-value，而是另一种机制 call-by-object，
+    亦 call-by-Object-reference ，或 call-by-sharing（参数传递是对一个对象的引用，但是这个引用却又是 passed by value）。
+    可以简单理解为实际上参数传递的是值，但是，这个「值」是对对象的引用。
+
+# __prepare__ 方法
+
+    参考：
+        1. https://docs.python.org/3/reference/datamodel.html#preparing-the-class-namespace
+
+    用于创建类的命名空间。
+
+    参数要求：
+        __prepare__ 方法的第一个参数是元类，随后两个参数分别是要构建的类的名称和基类组成的元组，返回值必须是映射。
+
+    工作原理：
+        元类构建新类时，解释器会先调用 __prepare__ 方法，使用类定义体中的属性创建映射。
+        接着把 __prepare__ 方法返回的映射会传给 __new__ 方法的最后一个参数，然后再传给 __init__ 方法。
+
+    使用场景：
+        __prepare__ 只在元类中有用，而且必须声明为类方法（即要使用 @classmethod 装饰器定义）。
+
+        3.6 版本以前，prepare 方法主要用来返回一个 OrderDict 对象，以保存类中属性的添加顺序。
+        而 3.6 版本以后，默认已经是保持顺序的了。
+
 # __init__, __new__ 区别
+
+    Python2 中的经典类是没有 __new__ 方法的。
+    类（必须是新式类）在实例化的时候会先调用 __new__，然后调用 __init__。
+
+    __new__: 
+        为实例对象申请一片内存，第一个参数是 cls（代表类对象本身），返回创建后的实例，
+        这个返回值会当做 __init__ 的第一个参数;
+    __init__: 
+        为实例对象绑定属性，第一个参数是 self（代表实例对象本身），没有返回值;
+
+# with 实现原理
+
+    with 在执行的时候，会执行紧随其后的代码，并调用该对象的 __enter__ 方法，执行相关操作，
+    如果出现异常，或者代码执行结束，则会自动调用 __exit__ 方法，进行资源的清理。
+
+    __enter__:
+        进入对象的上下文管理器调用的方法，会返回一个值，并赋值给 as 关键词之后的变量
+    __exit__:
+        退出对象的上下文管理器调用的方法，定义了处理结束后要做的事情，比如文件的关闭，socket 的断开等
+
+
+
+
+
+
+
+
+
+
+
 # Python 垃圾回收机制
 # yield 关键字作用
 # await 和 async 等关键字，版本，作用
 # tornado 实现原理
+# __iter__和__next__
+    https://zhuanlan.zhihu.com/p/266512848
 # 可变对象和不可变对象
 # 怎么实现单例
 # super 作用
-# 生成器原理
 # property 作用
 # slot 作用
 # 介绍一下Python 锁？
+# 生成器原理
 # 什么是python的生成器?
-# 什么是反射？以及应用场景？
 # 代码题:实现一个生产者消费者
 
 
