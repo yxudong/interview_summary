@@ -545,21 +545,20 @@
 
 
 
-
-# yield 关键字作用
-# await 和 async 等关键字，版本，作用
-# tornado 实现原理
-# flask 源码
 # __iter__和__next__
     https://zhuanlan.zhihu.com/p/266512848
+# yield 关键字作用
+# await 和 async 等关键字，版本，作用
 # 可变对象和不可变对象
 # 怎么实现单例
 # super 作用，超类
 # property 作用
 # slot 作用
-# 介绍一下Python 锁？
 # 生成器原理
 # 什么是python的生成器?
+# tornado 实现原理
+# flask 源码
+# 介绍一下Python 锁？
 # 代码题:实现一个生产者消费者
 
 
