@@ -104,6 +104,14 @@
     <img src='./images/Redis-ZipList.png'>
 </p>
 
+| 属性 | 类型 | 长度 | 用途 |
+| :---: | :---: | :---: |:---: |
+| zlbytes | uint_32t | 4B | <strong>记录整个压缩列表占用的内存字节数</strong>：在对压缩列表进行内存重分配， 或者计算 zlend的位置时使用 |
+| zltail | uint_32t | 4B | <strong>记录压缩列表表尾节点距离压缩列表的起始地址有多少字节</strong>：通过这个偏移量，程序无须遍历整个压缩列表就可以确定表尾节点的地址 |
+| zllen | uint_16t | 2B | <strong>记录了压缩列表包含的节点数量</strong>： 当这个属性的值小于UINT16_ MAX （65535）时， 这个属性的值就是压缩列表包含节点的数量；当这个值等于 UINT16_MAX 时，节点的真实数量需要遍历整个压缩列表才能计算得出 |
+| entryX | 列表节点 | 不定 | 压缩列表包含的各个节点，<strong>节点的长度由节点保存的内容决定</strong> |
+| zlend | uint_8t | 1B | 特殊值 0xFF （十进制 255 ），<strong>用于标记压缩列表的末端</strong> |
+
     LinkedList 是由一系列不连续的内存块通过指针连接起来的双向链表。
     缺点是它的内存开销比较大。首先，它在每个节点上除了要保存数据之外，还要额外保存两个指针。
     其次，它的各个节点是单独的内存块，地址不连续，节点多了容易产生内存碎片。
@@ -156,6 +164,9 @@
 
 # <a name="6">Redis Sorted Set 的实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
+    参考：
+        1. [Redis 为什么用跳表而不用平衡树？](https://juejin.cn/post/6844903446475177998)
+
     Zset 底层同样采用了两种方式来实现，分别是 ZipList 和 SkipList。当同时满足以下两个条件时，采用 ZipList 实现；反之采用 SkipList 实现：
         1. Zset 中保存的元素个数小于 128（可以通过配置文件修改）
         2. Zset 中保存的所有元素长度小于 64byte（可以通过配置文件修改）
@@ -168,6 +179,10 @@
         跳跃表按 score 从小到大保存所有集合元素，查找时间复杂度为平均 O(logN)，最坏 O(N) 。
         字典保存从 member 到 score 的映射，这样就可以用 O(1)​ 的复杂度来查找 member 对应的 score 值。
         跳表是一种并联的链表，它在链表的基础上增加了跳跃功能，正是这个跳跃的功能，使得在查找元素时，跳表能够提供 O(logN) 的时间复杂度。
+
+<p align='center'>
+    <img src='./images/Redis-SkipList.jpg'>
+</p>
 
     为什么用的跳表不是红黑树?
         根据作者的原话：
