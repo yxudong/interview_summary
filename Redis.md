@@ -120,6 +120,9 @@
 
 # <a name="4">Redis Hash 的实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
+    参考：
+        1. [渐进式 rehash](http://redisbook.com/preview/dict/incremental_rehashing.html)
+
     Redis 的哈希对象的底层存储可以使用 ZipList 和 HashTable。
     当 Hash 对象可以同时满足一下两个条件时，哈希对象使用 ZipList 编码：
         1. 哈希对象保存的所有键值对的键和值的字符串长度都小于 64 字节（可以通过配置文件修改）
@@ -367,7 +370,8 @@
 
 # <a name="22">Redis 如何实现分布式锁？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-    [参考链接](https://xiaomi-info.github.io/2019/12/17/redis-distributed-lock/)
+    参考：
+        1. [分布式锁的实现之 redis 篇](https://xiaomi-info.github.io/2019/12/17/redis-distributed-lock/)
 
     Redis 锁主要利用 Redis 的 setnx 命令。
     加锁命令：SETNX key value，当键不存在时，对键进行设置操作并返回成功，否则返回失败。KEY 是锁的唯一标识，一般按业务来决定命名。
@@ -438,6 +442,9 @@
 
 # <a name="25">什么是缓存穿透，怎么解决</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
+    参考：
+        1. [利用 Redis 的 bitmap 实现简单的布隆过滤器](https://learnku.com/articles/46442)
+
     缓存穿透是指查询不存在缓存中的数据，每次请求都会打到 DB，就像缓存不存在一样。
 
     解决方案：
@@ -446,7 +453,7 @@
         这样当用户再次来查询 A，而 A 在布隆过滤器值为 0，直接返回，就不会产生击穿请求打到 DB 了。
         使用布隆过滤器之后会有一个问题就是误判，因为它本身是一个数组，可能会有多个值落到同一个位置。
         理论上来说只要我们的数组长度够长，误判的概率就会越低，这种问题就根据实际情况来就好了。
-        BloomFilter 用 Bitmap 实现，[参考链接](https://xiaomi-info.github.io/2019/12/17/redis-distributed-lock/)
+        BloomFilter 用 Bitmap 实现，关于如何实现，可以参考 [1]
 
 # <a name="26">什么是缓存雪崩，怎么解决</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
@@ -653,7 +660,7 @@
         1. 首先根据键值对的 key，按照 CRC16 算法计算一个 16bit 的值
         2. 然后，再用这个 16bit 值对 16384 取模，得到 0~16383 范围内的模数，每个模数代表一个相应编号的哈希槽
 
-    哈希槽和实力的对应：
+    哈希槽和实例的对应：
         部署 Redis Cluster 时，可以使用 cluster create 命令创建集群，此时，Redis 会自动把这些槽平均分布在集群实例上。
         也可以使用 cluster meet 命令手动建立实例间的连接，形成集群，再使用 cluster addslots 命令，指定每个实例上的哈希槽个数。
         当 16384 个 slot 都有节点在处理时，集群处于上线状态，反之只要有一个 slot 没有得到处理都会处理下线状态。
