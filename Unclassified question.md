@@ -1,10 +1,25 @@
-# 1 到 n 中减少了一个数，顺序被打乱，找出缺失的数？
+<a name="index">**目录：**</a><br>
+&emsp;&emsp;<a href="#0">1 到 n 中减少了一个数，顺序被打乱，找出缺失的数？</a><br>
+&emsp;&emsp;<a href="#1">给定一个奇数位升序，偶数位降序的链表，将其重新排序。</a><br>
+&emsp;&emsp;<a href="#2">天平称重问题</a><br>
+&emsp;&emsp;<a href="#3">抢 30 问题</a><br>
+&emsp;&emsp;<a href="#4">服务限流</a><br>
+&emsp;&emsp;<a href="#5">服务熔断</a><br>
+&emsp;&emsp;<a href="#6">快速排序优化？</a><br>
+&emsp;&emsp;<a href="#7">一致性哈希</a><br>
+&emsp;&emsp;<a href="#8">CAS</a><br>
+&emsp;&emsp;<a href="#9">从无限的字符流中, 随机选出 10 个字符</a><br>
+&emsp;&emsp;<a href="#10">分布式事务</a><br>
+&emsp;&emsp;<a href="#11">跳表的实现方法</a><br>
+&emsp;&emsp;<a href="#12">raft 算法</a><br>
+&emsp;&emsp;<a href="#13">负载均衡的相关算法</a><br>
+# <a name="0">1 到 n 中减少了一个数，顺序被打乱，找出缺失的数？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     1. 用 1+2+...+n 减去当前输入数据的总和。（容易溢出）
     2. 对输入数据进行 Hash（可以 bitmap），然后从头到尾遍历一次。（容易溢出）
     3. 用 1^2^...^n 的结果再逐个异或当前输入数据。
 
-# 给定一个奇数位升序，偶数位降序的链表，将其重新排序。
+# <a name="1">给定一个奇数位升序，偶数位降序的链表，将其重新排序。</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     输入: 1->8->3->6->5->4->7->2->NULL
     输出: 1->2->3->4->5->6->7->8->NULL
@@ -13,7 +28,7 @@
     2. 反转偶链表，得 1->3->5->7->NULL 和 2->4->6->8->NULL
     3. 合并两个有序链表，得 1->2->3->4->5->6->7->8->NULL
 
-# 天平称重问题
+# <a name="2">天平称重问题</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     问题：
         用天平（只能比较，不能称重）从一堆小球中找出其中唯一一个较轻的，使用 x 次天平，
@@ -21,7 +36,7 @@
 
     将小球拆分为 3 份，在相同的比较次数下，可提高小球的比较数量，因此，其 y 与 x 的关系式为：y = 3^x
 
-# 抢 30 问题
+# <a name="3">抢 30 问题</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     甲乙二人轮流报数。从 1 起，每人每次可报一个数或连续报两个数。谁能报得 20 谁就获胜。
     先和同学玩一玩这个游戏。如果由你先报数，你能保证获胜吗？
@@ -43,7 +58,7 @@
         让 20 就要抢 19，并且依次抢 16、13、10、7、4、1。
         因此，要先报 1，再根据对方报数情况依次抢 4、7、10、13、16、19，这样就把 20 让给了对方。
 
-# 服务限流
+# <a name="4">服务限流</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
         1. [一文搞懂高频面试题之限流算法，从算法原理到实现，再到对比分析](https://juejin.cn/post/6870396751178629127#heading-12)
@@ -106,7 +121,7 @@
 
     分布式限流可以使用 Redis+Lua 脚本的方式实现上述算法。
 
-# 服务熔断
+# <a name="5">服务熔断</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
         1. [服务容错模式](https://tech.meituan.com/2016/11/11/service-fault-tolerant-pattern.html)
@@ -140,34 +155,34 @@
         如果这一定数量的请求有调用失败的情况，则认为导致之前调用失败的问题仍然存在，熔断器切回到断开方式，
         然后开始重置计时器来给系统一定的时间来修正错误。半断开状态能够有效防止正在恢复中的服务被突然而来的大量请求再次拖垮。
 
-# 快速排序优化？
+# <a name="6">快速排序优化？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     三数（最开始，最末尾，中间）取中值，为了使基准值更加随机，避免待排序数组已经基本有序，时间复杂度退化
 
-# 一致性哈希
+# <a name="7">一致性哈希</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# CAS
+# <a name="8">CAS</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# 从无限的字符流中, 随机选出 10 个字符
+# <a name="9">从无限的字符流中, 随机选出 10 个字符</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# 分布式事务
+# <a name="10">分布式事务</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# 跳表的实现方法
+# <a name="11">跳表的实现方法</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# raft 算法
+# <a name="12">raft 算法</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# 负载均衡的相关算法
+# <a name="13">负载均衡的相关算法</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo

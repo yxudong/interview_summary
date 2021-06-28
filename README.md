@@ -22,3 +22,4 @@ Knowledge list
 - [ ] Kafka
 - [ ] K8s
 - [ ] Elasticsearch
+- [ ] Unclassified question
