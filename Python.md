@@ -35,10 +35,10 @@
 &emsp;&emsp;<a href="#33">property 作用</a><br>
 &emsp;&emsp;<a href="#34">slot 作用</a><br>
 &emsp;&emsp;<a href="#35">生成器原理</a><br>
-&emsp;&emsp;<a href="#36">什么是python的生成器?</a><br>
+&emsp;&emsp;<a href="#36">什么是 Python 的生成器?</a><br>
 &emsp;&emsp;<a href="#37">tornado 实现原理</a><br>
 &emsp;&emsp;<a href="#38">flask 源码</a><br>
-&emsp;&emsp;<a href="#39">介绍一下Python 锁？</a><br>
+&emsp;&emsp;<a href="#39">介绍一下 Python 锁</a><br>
 &emsp;&emsp;<a href="#40">代码题:实现一个生产者消费者</a><br>
 # <a name="0">Python 中的整数</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
@@ -617,7 +617,7 @@
 
     todo
 
-# <a name="36">什么是python的生成器?</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="36">什么是 Python 的生成器?</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
@@ -629,7 +629,7 @@
 
     todo
 
-# <a name="39">介绍一下Python 锁？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="39">介绍一下 Python 锁</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 

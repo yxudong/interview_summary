@@ -575,7 +575,7 @@
 
     todo
 
-# 什么是python的生成器?
+# 什么是 Python 的生成器?
 
     todo
 
@@ -587,7 +587,7 @@
 
     todo
 
-# 介绍一下Python 锁？
+# 介绍一下 Python 锁
 
     todo
 
