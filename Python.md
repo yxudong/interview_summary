@@ -10,57 +10,36 @@
 &emsp;&emsp;<a href="#8">Python 中的 MRO</a><br>
 &emsp;&emsp;<a href="#9">静态方法和类方法，普通方法</a><br>
 &emsp;&emsp;<a href="#10">Python 的元类</a><br>
-&emsp;&emsp;<a href="#11">  # 不使用 class 关键字来定义，而使用 type，如下：</a><br>
-&emsp;&emsp;<a href="#12">__call__ 方法</a><br>
-&emsp;&emsp;<a href="#13">          # ...</a><br>
-&emsp;&emsp;<a href="#14">OrderedDict 怎么实现</a><br>
-&emsp;&emsp;<a href="#15">Python 线程安全</a><br>
-&emsp;&emsp;<a href="#16">Python 的 sort 函数实现原理</a><br>
-&emsp;&emsp;<a href="#17">xrange() 和 range() 的区别</a><br>
-&emsp;&emsp;<a href="#18">Python 中的 GIL</a><br>
-&emsp;&emsp;<a href="#19">Python 中的 __dict__ 和 dir()</a><br>
-&emsp;&emsp;<a href="#20">list() 和 [] 哪个效率更快？</a><br>
-&emsp;&emsp;<a href="#21">列表推导式，字典推导式，集合推导式</a><br>
-&emsp;&emsp;<a href="#22">      # 使用 [] 生成 list</a><br>
-&emsp;&emsp;<a href="#23">      # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</a><br>
-&emsp;&emsp;<a href="#24">      # 使用 () 生成 generator</a><br>
-&emsp;&emsp;<a href="#25">      # <generator object <genexpr> at 0x00000281C61DA840></a><br>
-&emsp;&emsp;<a href="#26">      # {1: 'a', 2: 'b', 3: 'c'}</a><br>
-&emsp;&emsp;<a href="#27">      # {1, 4}</a><br>
-&emsp;&emsp;<a href="#28">Python 装饰器</a><br>
-&emsp;&emsp;<a href="#29">      # foo = use_logging(foo)</a><br>
-&emsp;&emsp;<a href="#30">      # @use_logging(level="warn") 等价于 @decorator</a><br>
-&emsp;&emsp;<a href="#31">      # 它的执行顺序是从里到外，最先调用最里层的装饰器，最后调用最外层的装饰器，它等效于</a><br>
-&emsp;&emsp;<a href="#32">      # f = a(b(c(f)))</a><br>
-&emsp;&emsp;<a href="#33">一行代码写出乘法表</a><br>
-&emsp;&emsp;<a href="#34">  # 1*1=1</a><br>
-&emsp;&emsp;<a href="#35">  # 1*2=2 2*2=4</a><br>
-&emsp;&emsp;<a href="#36">  # 1*3=3 2*3=6 3*3=9</a><br>
-&emsp;&emsp;<a href="#37">  # 1*4=4 2*4=8 3*4=12 4*4=16</a><br>
-&emsp;&emsp;<a href="#38">  # 1*5=5 2*5=10 3*5=15 4*5=20 5*5=25</a><br>
-&emsp;&emsp;<a href="#39">  # 1*6=6 2*6=12 3*6=18 4*6=24 5*6=30 6*6=36</a><br>
-&emsp;&emsp;<a href="#40">  # 1*7=7 2*7=14 3*7=21 4*7=28 5*7=35 6*7=42 7*7=49</a><br>
-&emsp;&emsp;<a href="#41">  # 1*8=8 2*8=16 3*8=24 4*8=32 5*8=40 6*8=48 7*8=56 8*8=64</a><br>
-&emsp;&emsp;<a href="#42">  # 1*9=9 2*9=18 3*9=27 4*9=36 5*9=45 6*9=54 7*9=63 8*9=72 9*9=81</a><br>
-&emsp;&emsp;<a href="#43">Python 参数传递</a><br>
-&emsp;&emsp;<a href="#44">__prepare__ 方法</a><br>
-&emsp;&emsp;<a href="#45">__init__, __new__ 区别</a><br>
-&emsp;&emsp;<a href="#46">with 实现原理</a><br>
-&emsp;&emsp;<a href="#47">Python 垃圾回收机制</a><br>
-&emsp;&emsp;<a href="#48">__iter__和__next__</a><br>
-&emsp;&emsp;<a href="#49">yield 关键字作用</a><br>
-&emsp;&emsp;<a href="#50">await 和 async 等关键字，版本，作用</a><br>
-&emsp;&emsp;<a href="#51">可变对象和不可变对象</a><br>
-&emsp;&emsp;<a href="#52">怎么实现单例</a><br>
-&emsp;&emsp;<a href="#53">super 作用，超类</a><br>
-&emsp;&emsp;<a href="#54">property 作用</a><br>
-&emsp;&emsp;<a href="#55">slot 作用</a><br>
-&emsp;&emsp;<a href="#56">生成器原理</a><br>
-&emsp;&emsp;<a href="#57">什么是python的生成器?</a><br>
-&emsp;&emsp;<a href="#58">tornado 实现原理</a><br>
-&emsp;&emsp;<a href="#59">flask 源码</a><br>
-&emsp;&emsp;<a href="#60">介绍一下Python 锁？</a><br>
-&emsp;&emsp;<a href="#61">代码题:实现一个生产者消费者</a><br>
+&emsp;&emsp;<a href="#11">__call__ 方法</a><br>
+&emsp;&emsp;<a href="#12">OrderedDict 怎么实现</a><br>
+&emsp;&emsp;<a href="#13">Python 线程安全</a><br>
+&emsp;&emsp;<a href="#14">Python 的 sort 函数实现原理</a><br>
+&emsp;&emsp;<a href="#15">xrange() 和 range() 的区别</a><br>
+&emsp;&emsp;<a href="#16">Python 中的 GIL</a><br>
+&emsp;&emsp;<a href="#17">Python 中的 __dict__ 和 dir()</a><br>
+&emsp;&emsp;<a href="#18">list() 和 [] 哪个效率更快？</a><br>
+&emsp;&emsp;<a href="#19">列表推导式，字典推导式，集合推导式</a><br>
+&emsp;&emsp;<a href="#20">Python 装饰器</a><br>
+&emsp;&emsp;<a href="#21">一行代码写出乘法表</a><br>
+&emsp;&emsp;<a href="#22">Python 参数传递</a><br>
+&emsp;&emsp;<a href="#23">__prepare__ 方法</a><br>
+&emsp;&emsp;<a href="#24">__init__, __new__ 区别</a><br>
+&emsp;&emsp;<a href="#25">with 实现原理</a><br>
+&emsp;&emsp;<a href="#26">Python 垃圾回收机制</a><br>
+&emsp;&emsp;<a href="#27">__iter__和__next__</a><br>
+&emsp;&emsp;<a href="#28">yield 关键字作用</a><br>
+&emsp;&emsp;<a href="#29">await 和 async 等关键字，版本，作用</a><br>
+&emsp;&emsp;<a href="#30">可变对象和不可变对象</a><br>
+&emsp;&emsp;<a href="#31">怎么实现单例</a><br>
+&emsp;&emsp;<a href="#32">super 作用，超类</a><br>
+&emsp;&emsp;<a href="#33">property 作用</a><br>
+&emsp;&emsp;<a href="#34">slot 作用</a><br>
+&emsp;&emsp;<a href="#35">生成器原理</a><br>
+&emsp;&emsp;<a href="#36">什么是python的生成器?</a><br>
+&emsp;&emsp;<a href="#37">tornado 实现原理</a><br>
+&emsp;&emsp;<a href="#38">flask 源码</a><br>
+&emsp;&emsp;<a href="#39">介绍一下Python 锁？</a><br>
+&emsp;&emsp;<a href="#40">代码题:实现一个生产者消费者</a><br>
 # <a name="0">Python 中的整数</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
@@ -229,7 +208,7 @@
     ```
     class Foo(object):
         pass
-    # <a name="11">不使用 class 关键字来定义，而使用 type，如下：</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+    不使用 class 关键字来定义，而使用 type，如下：
 
     Foo = type('Foo', (object, ), {})    # 使用 type 创建了一个类对象
     ```
@@ -280,7 +259,7 @@
         1. ORM 框架
         2. 限制某些类不能直接实例化，必须要通过特定的类返回实例（通过 __call__ 方法）。
 
-# <a name="12">__call__ 方法</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="11">__call__ 方法</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     object() 相当于 object.__call__()
     __call__() 的作用是使实例能够像函数一样被调用，
@@ -289,13 +268,13 @@
     ```
     class Foo:
         def __call__(self, a, b, c):
-            # <a name="13">...</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+            ...
 
     x = Foo()
     x(1, 2, 3) # __call__
     ```
 
-# <a name="14">OrderedDict 怎么实现</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="12">OrderedDict 怎么实现</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     在继承了自身的 Dict 之后，类中还声明了一个循环双向链表 self.__root 作为自己的属性，
     用另一个 Dict 结构 self.__map 来存储 Key 到链表节点的对应关系，
@@ -307,7 +286,7 @@
            逆序给出 Key 的序列（这个特性在 Python 3.8 中加到了原生 Dict 中）等；
         2. OrderedDict 比较的时候会把 Key 的插入顺序考虑进去，而 Dict 不会
 
-# <a name="15">Python 线程安全</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="13">Python 线程安全</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
         1. [通俗易懂：说说 Python 里的线程安全、原子操作](https://segmentfault.com/a/1190000022644337)
@@ -333,7 +312,7 @@
 
     实现人工原子操作可以通过加锁的方式。
 
-# <a name="16">Python 的 sort 函数实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="14">Python 的 sort 函数实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
         1. [python sort函数内部实现原理](https://www.cnblogs.com/clement-jiao/p/9243066.html)
@@ -345,12 +324,12 @@
        Timsort 是结合了合并排序（merge sort）和插入排序（insertion sort）而得出的排序算法，它在现实中有很好的效率。
        该算法找到数据中已经排好序的块-分区，每一个分区叫一个 run，然后按规则合并这些 run。
 
-# <a name="17">xrange() 和 range() 的区别</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="15">xrange() 和 range() 的区别</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     Python2 中 xrange() 返回生成器，range() 返回 list，
     Python3 中没有 xrange()，只有 range()，并且返回生成器。
 
-# <a name="18">Python 中的 GIL</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="16">Python 中的 GIL</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
         1. [Python GIL(Global Interpreter Lock)](https://www.cnblogs.com/hwlong/p/9002779.html)
@@ -373,7 +352,7 @@
         对于 CPU 密集型代码，使用多进程，或者改为使用 C 实现
         对于 IO 密集型代码，使用多线程
 
-# <a name="19">Python 中的 __dict__ 和 dir()</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="17">Python 中的 __dict__ 和 dir()</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
         1. [what's the biggest difference between dir and __dict__ in python](https://stackoverflow.com/questions/14361256/whats-the-biggest-difference-between-dir-and-dict-in-python)
@@ -381,7 +360,7 @@
     dir() 不仅查找对象的 __dict__（有时甚至不存在），它还会根据对象的继承关系提供所有可用属性。
     __dict__ 只是获取实例的“本地”属性集，并不包含该实例的所有可用属性。
 
-# <a name="20">list() 和 [] 哪个效率更快？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="18">list() 和 [] 哪个效率更快？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     创建空列表时，[] 要比 list() 快。
 
@@ -396,33 +375,33 @@
 
     因为 list() 涉及的执行步骤更多，因此它比 [] 要慢一些。
 
-# <a name="21">列表推导式，字典推导式，集合推导式</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="19">列表推导式，字典推导式，集合推导式</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     列表推导式：
         ```
-        # <a name="22">使用 [] 生成 list</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+        使用 [] 生成 list
         a = [i for i in range(10)]
-        # <a name="23">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-        # <a name="24">使用 () 生成 generator</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+        使用 () 生成 generator
         a = (i for i in range(10))
-        # <a name="25"><generator object <genexpr> at 0x00000281C61DA840></a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+        <generator object <genexpr> at 0x00000281C61DA840>
         ```
 
     字典推导式：
         ```
         a = {'a': 1, 'b': 2, 'c': 3}
         b = {v: k for k, v in a.items()}
-        # <a name="26">{1: 'a', 2: 'b', 3: 'c'}</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+        {1: 'a', 2: 'b', 3: 'c'}
         ```
 
     集合推导式：
         ```
         a = {x**2 for x in [1, 1, 2]}
-        # <a name="27">{1, 4}</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+        {1, 4}
         ```
 
-# <a name="28">Python 装饰器</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="20">Python 装饰器</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
         1. [理解 Python 装饰器看这一篇就够了](https://foofish.net/python-decorator.html)
@@ -443,8 +422,7 @@
         def foo():
             print("i am foo")
 
-        # <a name="29">foo = use_logging(foo)</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
-        foo()
+        foo() # foo = use_logging(foo)
         ```
 
     带参数的装饰器:
@@ -461,8 +439,7 @@
 
             return decorator
 
-        # <a name="30">@use_logging(level="warn") 等价于 @decorator</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
-        @use_logging(level="warn")
+        @use_logging(level="warn") # @use_logging(level="warn") 等价于 @decorator
         def foo(name='foo'):
             print("i am %s" % name)
 
@@ -477,8 +454,8 @@
         def f ():
             pass
 
-        # <a name="31">它的执行顺序是从里到外，最先调用最里层的装饰器，最后调用最外层的装饰器，它等效于</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
-        # <a name="32">f = a(b(c(f)))</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+        它的执行顺序是从里到外，最先调用最里层的装饰器，最后调用最外层的装饰器，它等效于
+        f = a(b(c(f)))
         ```
 
     类装饰器：
@@ -501,23 +478,23 @@
         bar()
         ```
 
-# <a name="33">一行代码写出乘法表</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="21">一行代码写出乘法表</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     ```
     print("\n".join([" ".join(["{}*{}={}".format(j, i, j*i) for j in range(1, i+1)]) for i in range(1, 10)]))
 
-    # <a name="34">1*1=1</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
-    # <a name="35">1*2=2 2*2=4</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
-    # <a name="36">1*3=3 2*3=6 3*3=9</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
-    # <a name="37">1*4=4 2*4=8 3*4=12 4*4=16</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
-    # <a name="38">1*5=5 2*5=10 3*5=15 4*5=20 5*5=25</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
-    # <a name="39">1*6=6 2*6=12 3*6=18 4*6=24 5*6=30 6*6=36</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
-    # <a name="40">1*7=7 2*7=14 3*7=21 4*7=28 5*7=35 6*7=42 7*7=49</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
-    # <a name="41">1*8=8 2*8=16 3*8=24 4*8=32 5*8=40 6*8=48 7*8=56 8*8=64</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
-    # <a name="42">1*9=9 2*9=18 3*9=27 4*9=36 5*9=45 6*9=54 7*9=63 8*9=72 9*9=81</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+    1*1=1
+    1*2=2 2*2=4
+    1*3=3 2*3=6 3*3=9
+    1*4=4 2*4=8 3*4=12 4*4=16
+    1*5=5 2*5=10 3*5=15 4*5=20 5*5=25
+    1*6=6 2*6=12 3*6=18 4*6=24 5*6=30 6*6=36
+    1*7=7 2*7=14 3*7=21 4*7=28 5*7=35 6*7=42 7*7=49
+    1*8=8 2*8=16 3*8=24 4*8=32 5*8=40 6*8=48 7*8=56 8*8=64
+    1*9=9 2*9=18 3*9=27 4*9=36 5*9=45 6*9=54 7*9=63 8*9=72 9*9=81
     ```
 
-# <a name="43">Python 参数传递</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="22">Python 参数传递</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
     参考：
         1. [Python的函数参数传递：传值？引用？](http://winterttr.me/2015/10/24/python-passing-arguments-as-value-or-reference/)
         2. [关于Python中参数传递和作用域的问题？ - Coldwings的回答 - 知乎](https://www.zhihu.com/question/58539447/answer/157433659)
@@ -527,7 +504,7 @@
     亦 call-by-Object-reference ，或 call-by-sharing（参数传递是对一个对象的引用，但是这个引用却又是 passed by value）。
     可以简单理解为实际上参数传递的是值，但是，这个「值」是对对象的引用。
 
-# <a name="44">__prepare__ 方法</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="23">__prepare__ 方法</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
         1. https://docs.python.org/3/reference/datamodel.html#preparing-the-class-namespace
@@ -547,7 +524,7 @@
         3.6 版本以前，prepare 方法主要用来返回一个 OrderDict 对象，以保存类中属性的添加顺序。
         而 3.6 版本以后，默认已经是保持顺序的了。
 
-# <a name="45">__init__, __new__ 区别</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="24">__init__, __new__ 区别</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     Python2 中的经典类是没有 __new__ 方法的。
     类（必须是新式类）在实例化的时候会先调用 __new__，然后调用 __init__。
@@ -558,7 +535,7 @@
     __init__:
         为实例对象绑定属性，第一个参数是 self（代表实例对象本身），没有返回值;
 
-# <a name="46">with 实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="25">with 实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     with 在执行的时候，会执行紧随其后的代码，并调用该对象的 __enter__ 方法，执行相关操作，
     如果出现异常，或者代码执行结束，则会自动调用 __exit__ 方法，进行资源的清理。
@@ -568,7 +545,7 @@
     __exit__:
         退出对象的上下文管理器调用的方法，定义了处理结束后要做的事情，比如文件的关闭，socket 的断开等
 
-# <a name="47">Python 垃圾回收机制</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="26">Python 垃圾回收机制</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
         1. https://devguide.python.org/garbage_collector/
@@ -603,59 +580,59 @@
         同样，从上一次第 2 代 GC 后，如果第 1 代被 GC 垃圾回收的次数大于 threshold2，
         那么就会对第 2 代中的对象进行 GC 垃圾回收检查。
 
-# <a name="48">__iter__和__next__</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="27">__iter__和__next__</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
     https://zhuanlan.zhihu.com/p/266512848
 
-# <a name="49">yield 关键字作用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="28">yield 关键字作用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# <a name="50">await 和 async 等关键字，版本，作用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="29">await 和 async 等关键字，版本，作用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# <a name="51">可变对象和不可变对象</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="30">可变对象和不可变对象</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# <a name="52">怎么实现单例</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="31">怎么实现单例</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# <a name="53">super 作用，超类</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="32">super 作用，超类</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# <a name="54">property 作用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="33">property 作用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# <a name="55">slot 作用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="34">slot 作用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# <a name="56">生成器原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="35">生成器原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# <a name="57">什么是python的生成器?</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="36">什么是python的生成器?</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# <a name="58">tornado 实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="37">tornado 实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# <a name="59">flask 源码</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="38">flask 源码</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# <a name="60">介绍一下Python 锁？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="39">介绍一下Python 锁？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# <a name="61">代码题:实现一个生产者消费者</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="40">代码题:实现一个生产者消费者</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
