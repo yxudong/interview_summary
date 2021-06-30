@@ -58,7 +58,7 @@
     容量最小为 8。
 
 <p align='center'>
-    <img src='./images/Python-Dict 底层结构.png'>
+    <img src='./images/Python/Python-Dict 底层结构.png'>
 </p>
 
     split-table dictionaries（分离表） vs combined-table dictionaries（结合表）：
@@ -95,7 +95,7 @@
     allocated：容量, 我们知道列表底层是使用了C的数组, 而底层数组的长度就是列表的容量
 
 <p align='center'>
-    <img src='./images/Python-List 底层结构.png'>
+    <img src='./images/Python/Python-List 底层结构.png'>
 </p>
 
 # <a name="3">Python 中的小整数池</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
@@ -238,7 +238,7 @@
     type, object, class, 和 instance 关系：
 
 <p align='center'>
-    <img src='./images/Python-type, object, class 和 instance（1）.png'>
+    <img src='./images/Python/Python-type, object, class 和 instance（1）.png'>
 </p>
 
         object 在这张图中的角色很重要，它既是所有类的基类（base class）（所有类都继承它），
@@ -252,7 +252,7 @@
         它虽然是类的类，但“类”这个身份也恰恰让它不得不符合类的基本形式。上面这张图还可以画成这种形式：
 
 <p align='center'>
-    <img src='./images/Python-type, object, class 和 instance（2）.png'>
+    <img src='./images/Python/Python-type, object, class 和 instance（2）.png'>
 </p>
 
     用途：
