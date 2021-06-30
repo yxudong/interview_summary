@@ -32,6 +32,7 @@
 &emsp;&emsp;<a href="#30">Go 和 Python 里面的协程有什么区别？</a><br>
 &emsp;&emsp;<a href="#31">为什么说使用通信共享内存，而不是使用共享内存通信？</a><br>
 &emsp;&emsp;<a href="#32">什么时候使用 channel，什么时候使用 sync？</a><br>
+&emsp;&emsp;<a href="#33">多协程查询切片问题？</a><br>
 # <a name="0">Go 的数据类型 rune 和 byte</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     byte 是 uint8 的别名，它表示的是 ACSII 表中的一个字符。
@@ -81,7 +82,7 @@
     每个 Map 的底层结构是 hmap，是有若干个结构为 bmap 的 bucket 组成的数组。每个 bucket 底层都采用链表结构。
 
 <p align='center'>
-    <img src='./images/Go-Map 底层结构.png'>
+    <img src='./images/Go/Go-Map 底层结构.png'>
 </p>
 
     扩容的过程
@@ -579,7 +580,7 @@
     接收和发送数据都需要先获取锁。
 
 <p align='center'>
-    <img src='./images/Go-操作 channel 结果.jpg'>
+    <img src='./images/Go/Go-操作 channel 结果.jpg'>
 </p>
 
 # <a name="26">Goroutine 原理（调度器）</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
@@ -634,7 +635,7 @@
         每个 M 都代表了1个内核线程，OS 调度器负责把内核线程分配到 CPU 的核上执行。
 
 <p align='center'>
-    <img src='./images/Go-G-P-M 模型的结构.jpg'>
+    <img src='./images/Go/Go-G-P-M 模型的结构.jpg'>
 </p>
 
     有关 P 和 M 的个数问题：
@@ -678,7 +679,7 @@
         可以认为调度循环永远都不会返回。
 
 <p align='center'>
-    <img src='./images/Go-scheduler loop.png'>
+    <img src='./images/Go/Go-scheduler loop.png'>
 </p>
 
         调度时机：
@@ -851,5 +852,9 @@
         https://zhuanlan.zhihu.com/p/213712219
 
 <p align='center'>
-    <img src='./images/Go-Primitive vs Channel.jpg'>
+    <img src='./images/Go/Go-Primitive vs Channel.jpg'>
 </p>
+
+# <a name="33">多协程查询切片问题？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+    todo
