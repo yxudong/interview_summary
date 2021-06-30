@@ -62,7 +62,7 @@
     最大的缺点是是连锁更新问题，以时间换空间。
 
 <p align='center'>
-    <img src='./images/Redis-ZipList.png'>
+    <img src='./images/Redis/Redis-ZipList.png'>
 </p>
 
 | 属性 | 类型 | 长度 | 用途 |
@@ -78,13 +78,13 @@
     其次，它的各个节点是单独的内存块，地址不连续，节点多了容易产生内存碎片。
 
 <p align='center'>
-    <img src='./images/Redis-LinkedList.png'>
+    <img src='./images/Redis/Redis-LinkedList.png'>
 </p>
 
     QuickList 是一个 ZipList 组成的双向链表。
 
 <p align='center'>
-    <img src='./images/Redis-QuickList.png'>
+    <img src='./images/Redis/Redis-QuickList.png'>
 </p>
 
 # Redis Hash 的实现原理
@@ -113,7 +113,7 @@
     Redis 将所有的 rehash 的操作分成多步进行，直到都 rehash 完成，
 
 <p align='center'>
-    <img src='./images/Redis-HashTable.jpg'>
+    <img src='./images/Redis/Redis-HashTable.jpg'>
 </p>
 
 # Redis Set 的实现原理
@@ -142,7 +142,7 @@
         跳表是一种并联的链表，它在链表的基础上增加了跳跃功能，正是这个跳跃的功能，使得在查找元素时，跳表能够提供 O(logN) 的时间复杂度。
 
 <p align='center'>
-    <img src='./images/Redis-SkipList.jpg'>
+    <img src='./images/Redis/Redis-SkipList.jpg'>
 </p>
 
     为什么用的跳表不是红黑树?
@@ -575,7 +575,7 @@
     4. 主服务器再将缓冲区记录的写命令发送给从服务器，从服务器执行完这些写命令后，此时的数据库状态便和主服务器一致了。
 
 <p align='center'>
-    <img src='./images/Redis-全量同步机制.jpg'>
+    <img src='./images/Redis/Redis-全量同步机制.jpg'>
 </p>
 
     上面写的命令是 sync，但是在 Redis 2.8 版本之后已经使用 psync 来替代 sync 了，
@@ -655,7 +655,7 @@
         然后就可以在客户端执行订阅命令，来获取不同的事件消息。
 
 <p align='center'>
-    <img src='./images/Redis-哨兵.jpg'>
+    <img src='./images/Redis/Redis-哨兵.jpg'>
 </p>
 
     优缺点：
