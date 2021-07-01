@@ -1,5 +1,5 @@
 <a name="index">**目录：**</a><br>
-&emsp;&emsp;<a href="#0">1 到 n 中减少了一个数，顺序被打乱，找出缺失的数？</a><br>
+&emsp;&emsp;<a href="#0">1 到 n 中减少了一个数，顺序被打乱，找出缺失的数</a><br>
 &emsp;&emsp;<a href="#1">给定一个奇数位升序，偶数位降序的链表，将其重新排序。</a><br>
 &emsp;&emsp;<a href="#2">天平称重问题</a><br>
 &emsp;&emsp;<a href="#3">抢 30 问题</a><br>
@@ -13,7 +13,10 @@
 &emsp;&emsp;<a href="#11">跳表的实现方法</a><br>
 &emsp;&emsp;<a href="#12">raft 算法</a><br>
 &emsp;&emsp;<a href="#13">负载均衡的相关算法</a><br>
-# <a name="0">1 到 n 中减少了一个数，顺序被打乱，找出缺失的数？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+&emsp;&emsp;<a href="#14">avl tree b树与b+树，红黑树的区别和应用场景？</a><br>
+&emsp;&emsp;<a href="#15">top k 问题</a><br>
+&emsp;&emsp;<a href="#16">红黑树平衡性，复杂度</a><br>
+# <a name="0">1 到 n 中减少了一个数，顺序被打乱，找出缺失的数</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     1. 用 1+2+...+n 减去当前输入数据的总和。（容易溢出）
     2. 对输入数据进行 Hash（可以 bitmap），然后从头到尾遍历一次。（容易溢出）
@@ -80,6 +83,7 @@
                 窗口前期没有请求，所以这 100 个请求都会通过。
                 再恰好，下一个窗口的第 1ms 有来了 100 个请求，也全部通过了，那也就是在 2ms 之内通过了 200 个请求，
                 而我们设定的阈值是 100，通过的请求达到了阈值的两倍。
+
     2. 计数器滑动窗口算法
         计数器滑动窗口算法是计数器固定窗口算法的改进，解决了固定窗口切换时可能会产生两倍于阈值流量请求的缺点。
         滑动窗口算法在固定窗口的基础上，将一个计时窗口分成了若干个小窗口，然后每个小窗口维护一个独立的计数器。
@@ -184,5 +188,18 @@
     todo
 
 # <a name="13">负载均衡的相关算法</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+    todo
+
+# <a name="14">avl tree b树与b+树，红黑树的区别和应用场景？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+    todo
+    红黑树与avl树的区别，为什么有这些区别？
+
+# <a name="15">top k 问题</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+    todo
+
+# <a name="16">红黑树平衡性，复杂度</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
