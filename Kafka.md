@@ -1,34 +1,37 @@
 <a name="index">**目录：**</a><br>
-&emsp;&emsp;<a href="#0">为什么使用 Kafka</a><br>
-&emsp;&emsp;<a href="#1">使用 Kafka 的优点和缺点</a><br>
-&emsp;&emsp;<a href="#2">Kafka 和 RabbitMQ 区别</a><br>
-&emsp;&emsp;<a href="#3">Kafka 的消息模型</a><br>
-&emsp;&emsp;<a href="#4">什么是Producer、Consumer、Broker、Topic、Partition？</a><br>
-&emsp;&emsp;<a href="#5">Kafka 的多副本机制了解吗？带来了什么好处？</a><br>
-&emsp;&emsp;<a href="#6">Kafka 的多分区（Partition）以及多副本（Replica）机制有什么好处呢？</a><br>
-&emsp;&emsp;<a href="#7">Zookeeper 和 Kafka 的关系</a><br>
-&emsp;&emsp;<a href="#8">怎么保证消息有序</a><br>
-&emsp;&emsp;<a href="#9">如何保证不消费重复数据？</a><br>
-&emsp;&emsp;<a href="#10">怎么保证消息不丢失</a><br>
-&emsp;&emsp;<a href="#11">重平衡</a><br>
-&emsp;&emsp;<a href="#12">怎么实现延时消息</a><br>
-&emsp;&emsp;<a href="#13">消息堆积怎么处理</a><br>
-&emsp;&emsp;<a href="#14">Kafka 的哪些场景中使用了零拷贝（Zero Copy）？</a><br>
-&emsp;&emsp;<a href="#15">Kafka 怎么保证高可用</a><br>
-# <a name="0">为什么使用 Kafka</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+&emsp;&emsp;<a href="#0">为什么使用 Kafka（消息队列）？</a><br>
+&emsp;&emsp;<a href="#1">消息队列有什么优点和缺点？</a><br>
+&emsp;&emsp;<a href="#2">Kafka 的消息模型</a><br>
+&emsp;&emsp;<a href="#3">什么是Producer、Consumer、Broker、Topic、Partition？</a><br>
+&emsp;&emsp;<a href="#4">Kafka 的多副本机制了解吗？带来了什么好处？</a><br>
+&emsp;&emsp;<a href="#5">Kafka 的多分区（Partition）以及多副本（Replica）机制有什么好处呢？</a><br>
+&emsp;&emsp;<a href="#6">Zookeeper 和 Kafka 的关系</a><br>
+&emsp;&emsp;<a href="#7">怎么保证消息有序</a><br>
+&emsp;&emsp;<a href="#8">如何保证不消费重复数据？</a><br>
+&emsp;&emsp;<a href="#9">怎么保证消息不丢失</a><br>
+&emsp;&emsp;<a href="#10">重平衡</a><br>
+&emsp;&emsp;<a href="#11">怎么实现延时消息</a><br>
+&emsp;&emsp;<a href="#12">消息堆积怎么处理</a><br>
+&emsp;&emsp;<a href="#13">Kafka 的哪些场景中使用了零拷贝（Zero Copy）？</a><br>
+&emsp;&emsp;<a href="#14">Kafka 怎么保证高可用</a><br>
+# <a name="0">为什么使用 Kafka（消息队列）？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-    todo
-    https://github.com/doocs/advanced-java/blob/main/docs/high-concurrency/why-mq.md#kafkaactivemqrabbitmqrocketmq-%E6%9C%89%E4%BB%80%E4%B9%88%E4%BC%98%E7%BC%BA%E7%82%B9
+    参考：
+        1. [why-mq.md](https://github.com/doocs/advanced-java/blob/main/docs/high-concurrency/why-mq.md#kafkaactivemqrabbitmqrocketmq-%E6%9C%89%E4%BB%80%E4%B9%88%E4%BC%98%E7%BC%BA%E7%82%B9)
 
-# <a name="1">使用 Kafka 的优点和缺点</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+    1. 解耦
+    2. 异步
+    3. 削峰（限流）
 
-    todo
+# <a name="1">消息队列有什么优点和缺点？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-# <a name="2">Kafka 和 RabbitMQ 区别</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+    优点就是在特殊场景下有其对应的好处，解耦、异步、削峰。
+    缺点：
+        1. 系统可用性降低
+        2. 系统复杂度提高
+        3. 一致性问题
 
-    todo
-
-# <a name="3">Kafka 的消息模型</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="2">Kafka 的消息模型</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
 <p align='center'>
     <img src='./images/Kafka/发布-订阅模型.png'>
@@ -42,7 +45,7 @@
 
     Kafka 采用的就是发布-订阅模型。
 
-# <a name="4">什么是Producer、Consumer、Broker、Topic、Partition？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="3">什么是Producer、Consumer、Broker、Topic、Partition？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     Kafka 将生产者发布的消息发送到 Topic（主题） 中，需要这些消息的消费者可以订阅这些 Topic（主题），如下图所示：
 
@@ -65,7 +68,7 @@
         一个 Topic 可以有多个 Partition，并且同一 Topic 下的 Partition 可以分布在不同的 Broker 上，
         这也表明一个 Topic 可以横跨多个 Broker。
 
-# <a name="5">Kafka 的多副本机制了解吗？带来了什么好处？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="4">Kafka 的多副本机制了解吗？带来了什么好处？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     Kafka 为分区（Partition）引入了多副本（Replica）机制。
     分区（Partition）中的多个副本之间会有一个叫做 leader 的家伙，其他副本称为 follower。
@@ -76,14 +79,14 @@
     当 leader 副本发生故障时会从 follower 中选举出一个 leader，
     但是 follower 中如果有和 leader 同步程度达不到要求的参加不了 leader 的竞选。
 
-# <a name="6">Kafka 的多分区（Partition）以及多副本（Replica）机制有什么好处呢？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="5">Kafka 的多分区（Partition）以及多副本（Replica）机制有什么好处呢？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     1. Kafka 通过给特定 Topic 指定多个 Partition, 而各个 Partition 可以分布在不同的 Broker 上,
        这样便能提供比较好的并发能力（负载均衡）。
     2. Partition 可以指定对应的 Replica 数, 这也极大地提高了消息存储的安全性,
        提高了容灾能力，不过也相应的增加了所需要的存储空间。
 
-# <a name="7">Zookeeper 和 Kafka 的关系</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="6">Zookeeper 和 Kafka 的关系</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
         1. [9张图，Kafka为什么要放弃Zookeeper](https://developer.51cto.com/art/202104/658581.htm)
@@ -114,7 +117,7 @@
 
     Kafka 2.8 版本去除了 Zookeeper，将依赖于 ZooKeeper 的控制器改造成了基于 Kafka Raft 的 Quorm 控制器。
 
-# <a name="8">怎么保证消息有序</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="7">怎么保证消息有序</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     Kafka 只能保证 Partition(分区) 中的消息有序，而不能保证 Topic 中的消息有序。
 
@@ -126,11 +129,11 @@
         1. 1 个 Topic 只对应一个 Partition。
         2. （推荐）发送消息的时候指定 key/Partition。
 
-# <a name="9">如何保证不消费重复数据？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="8">如何保证不消费重复数据？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     消息投递的可靠保证设置为 At-least-once，同时由业务方来保证，比如通过 Redis，Mysql 唯一索引等等。
 
-# <a name="10">怎么保证消息不丢失</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="9">怎么保证消息不丢失</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
     生产者丢失消息的情况：
@@ -159,24 +162,37 @@
 
     但是，为了保证整个 Kafka 服务的高可用性，你需要确保 replication.factor > min.insync.replicas 。为什么呢？设想一下假如两者相等的话，只要是有一个副本挂掉，整个分区就无法正常工作了。这明显违反高可用性！一般推荐设置成 replication.factor = min.insync.replicas + 1。
 
-# <a name="11">重平衡</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="10">重平衡</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
 
-# <a name="12">怎么实现延时消息</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="11">怎么实现延时消息</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
+    只能实现基于队列的延时，不能实现基于时间的延时（也就是任意精度的延时）。
 
-# <a name="13">消息堆积怎么处理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-    todo
-    https://github.com/doocs/advanced-java/blob/main/docs/high-concurrency/mq-time-delay-and-expired-failure.md
 
-# <a name="14">Kafka 的哪些场景中使用了零拷贝（Zero Copy）？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+# <a name="12">消息堆积怎么处理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+    参考：
+        1. [mq-time-delay-and-expired-failure.md](https://github.com/doocs/advanced-java/blob/main/docs/high-concurrency/mq-time-delay-and-expired-failure.md)
+
+    1. 先修复 consumer 的问题，确保其恢复消费速度，然后将现有 consumer 都停掉。
+    2. 新建一个 topic，partition 是原来的 10 倍，临时建立好原先 10 倍的 queue 数量。
+    3. 然后写一个临时的分发数据的 consumer 程序，这个程序部署上去消费积压的数据，消费之后不做耗时的处理，
+       直接均匀轮询写入临时建立好的 10 倍数量的 queue。
+    4. 接着临时征用 10 倍的机器来部署 consumer，每一批 consumer 消费一个临时 queue 的数据。
+       这种做法相当于是临时将 queue 资源和 consumer 资源扩大 10 倍，以正常的 10 倍速度来消费数据。
+    5. 等快速消费完积压数据之后，得恢复原先部署的架构，重新用原先的 consumer 机器来消费消息。
+
+# <a name="13">Kafka 的哪些场景中使用了零拷贝（Zero Copy）？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
     https://time.geekbang.org/column/article/246934?utm_source=related_read&utm_medium=article&utm_term=related_read
 
-# <a name="15">Kafka 怎么保证高可用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="14">Kafka 怎么保证高可用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-    todo
+    1. 副本机制
+    2. 故障自动恢复机制

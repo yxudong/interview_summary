@@ -1,15 +1,19 @@
-# 为什么使用 Kafka
+# 为什么使用 Kafka（消息队列）？
 
-    todo
-    https://github.com/doocs/advanced-java/blob/main/docs/high-concurrency/why-mq.md#kafkaactivemqrabbitmqrocketmq-%E6%9C%89%E4%BB%80%E4%B9%88%E4%BC%98%E7%BC%BA%E7%82%B9
+    参考：
+        1. [why-mq.md](https://github.com/doocs/advanced-java/blob/main/docs/high-concurrency/why-mq.md#kafkaactivemqrabbitmqrocketmq-%E6%9C%89%E4%BB%80%E4%B9%88%E4%BC%98%E7%BC%BA%E7%82%B9)
 
-# 使用 Kafka 的优点和缺点
+    1. 解耦
+    2. 异步
+    3. 削峰（限流）
 
-    todo
+# 消息队列有什么优点和缺点？
 
-# Kafka 和 RabbitMQ 区别
-
-    todo
+    优点就是在特殊场景下有其对应的好处，解耦、异步、削峰。
+    缺点：
+        1. 系统可用性降低
+        2. 系统复杂度提高
+        3. 一致性问题
 
 # Kafka 的消息模型
 
@@ -149,11 +153,23 @@
 # 怎么实现延时消息
 
     todo
+    只能实现基于队列的延时，不能实现基于时间的延时（也就是任意精度的延时）。
+    
+    
+    
 
 # 消息堆积怎么处理
 
-    todo
-    https://github.com/doocs/advanced-java/blob/main/docs/high-concurrency/mq-time-delay-and-expired-failure.md
+    参考：
+        1. [mq-time-delay-and-expired-failure.md](https://github.com/doocs/advanced-java/blob/main/docs/high-concurrency/mq-time-delay-and-expired-failure.md)
+
+    1. 先修复 consumer 的问题，确保其恢复消费速度，然后将现有 consumer 都停掉。
+    2. 新建一个 topic，partition 是原来的 10 倍，临时建立好原先 10 倍的 queue 数量。
+    3. 然后写一个临时的分发数据的 consumer 程序，这个程序部署上去消费积压的数据，消费之后不做耗时的处理，
+       直接均匀轮询写入临时建立好的 10 倍数量的 queue。
+    4. 接着临时征用 10 倍的机器来部署 consumer，每一批 consumer 消费一个临时 queue 的数据。
+       这种做法相当于是临时将 queue 资源和 consumer 资源扩大 10 倍，以正常的 10 倍速度来消费数据。
+    5. 等快速消费完积压数据之后，得恢复原先部署的架构，重新用原先的 consumer 机器来消费消息。
 
 # Kafka 的哪些场景中使用了零拷贝（Zero Copy）？
 
@@ -162,4 +178,5 @@
 
 # Kafka 怎么保证高可用
 
-    todo
+    1. 副本机制
+    2. 故障自动恢复机制

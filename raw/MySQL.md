@@ -27,6 +27,7 @@
 # 主从复制
 
     todo
+    https://github.com/doocs/advanced-java/blob/main/docs/high-concurrency/mysql-read-write-separation.md
 
 # 如何保证高可用
 

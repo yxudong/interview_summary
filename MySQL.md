@@ -36,6 +36,7 @@
 # <a name="3">主从复制</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
+    https://github.com/doocs/advanced-java/blob/main/docs/high-concurrency/mysql-read-write-separation.md
 
 # <a name="4">如何保证高可用</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
