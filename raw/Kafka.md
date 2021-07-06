@@ -60,8 +60,7 @@
 
     生产者和消费者只与 leader 副本交互。
     可以理解为其他副本只是 leader 副本的拷贝，它们的存在只是为了保证消息存储的安全性。
-    当 leader 副本发生故障时会从 follower 中选举出一个 leader，
-    但是 follower 中如果有和 leader 同步程度达不到要求的参加不了 leader 的竞选。
+    当 leader 副本发生故障时会从 follower 中选举出一个 leader。
 
 # Kafka 的多分区（Partition）以及多副本（Replica）机制有什么好处呢？
 
@@ -101,6 +100,44 @@
 
     Kafka 2.8 版本去除了 Zookeeper，将依赖于 ZooKeeper 的控制器改造成了基于 Kafka Raft 的 Quorm 控制器。
 
+# ISR
+
+    参考：
+        1. [Kafka之ISR机制的理解](https://blog.csdn.net/daima_caigou/article/details/109390705)
+
+    ISR（In-Sync Replicas）表示能够和 leader 保持同步的 follower + leader 本身组成的集合。
+    处于 ISR 内部的 follower 都是可以和 leader 进行同步的，一旦出现故障或延迟，就会被踢出 ISR。
+
+# 重平衡
+
+    参考：
+        1. [线上Kafka突发rebalance异常，如何快速解决？](https://www.cnblogs.com/chanshuyi/p/kafka_rebalance_quick_guide.html)
+        2. [极客时间《Kafka核心技术与实战》17 | 消费者组重平衡能避免吗？](https://time.geekbang.org/column/article/105737)
+
+     Kafka 怎么均匀地分配某个 topic 下的所有 partition 到各个消费者，从而使得消息的消费速度达到最快，这就是平衡（balance）。
+     而 rebalance（重平衡）其实就是重新进行 partition 的分配，从而使得 partition 的分配重新达到平衡状态。
+
+    什么时候会发生 rebalance：
+        1. 订阅 Topic 的分区数发生变化。
+        2. 订阅的 Topic 个数发生变化。
+        3. 消费组内成员个数发生变化。例如有新的 consumer 实例加入该消费组或者离开组。
+            3.1 新成员加入
+            3.2 组成员主动离开
+            3.3 组成员崩溃
+
+    rebalance 问题处理思路：
+        对于「新成员加入」、「组成员主动离开」都是主动触发的，能比较好地控制。
+        但是「组成员崩溃」则是预料不到的，遇到问题的时候也比较不好排查。
+        处理 rebalance 问题，需要先搞清楚 Kafka 消费者配置的四个参数：
+            session.timeout.ms 心跳的超时时间
+            heartbeat.interval.ms 心跳时间间隔
+            max.poll.interval.ms 每次消费的处理时间
+            max.poll.records 每次消费的消息数
+
+        对于 rebalance 类问题，简单总结就是：处理好心跳超时问题和消费处理超时问题。
+            1. 对于心跳超时问题。一般是调高心跳超时时间（session.timeout.ms）和心跳间隔时间（heartbeat.interval.ms）的比例。
+            2. 对于消费处理超时问题。一般是增加消费者处理的时间（max.poll.interval.ms），减少每次处理的消息数（max.poll.records）。
+
 # 怎么保证消息有序
 
     Kafka 只能保证 Partition(分区) 中的消息有序，而不能保证 Topic 中的消息有序。
@@ -119,44 +156,47 @@
 
 # 怎么保证消息不丢失
 
-    todo
     生产者丢失消息的情况：
         采用为发送消息函数添加回调的形式，消息发送失败重试，
         同时把 Producer 的 retries（重试次数）设置为一个比较合理的值。
+
     消费者丢失消息的情况：
-        消息在被追加到 Partition(分区)的时候都会分配一个特定的偏移量（offset）。偏移量（offset)表示 Consumer 当前消费到的 Partition(分区)的所在的位置。Kafka 通过偏移量（offset）可以保证消息在分区内的顺序性。
-        当消费者拉取到了分区的某个消息之后，消费者会自动提交了 offset。自动提交的话会有一个问题，试想一下，当消费者刚拿到这个消息准备进行真正消费的时候，突然挂掉了，消息实际上并没有被消费，但是 offset 却被自动提交了。
+        消息在被追加到 Partition（分区）的时候都会分配一个特定的偏移量（offset）。
+        偏移量（offset)表示 Consumer 当前消费到的 Partition（分区）的所在的位置。
+        Kafka 通过偏移量（offset）可以保证消息在分区内的顺序性。
+        当消费者拉取到了分区的某个消息之后，消费者会自动提交了 offset。
+        自动提交的话会有一个问题，试想一下，当消费者刚拿到这个消息准备进行真正消费的时候，
+        突然挂掉了，消息实际上并没有被消费，但是 offset 却被自动提交了。
 
-        解决办法也比较粗暴，我们手动关闭自动提交 offset，每次在真正消费完消息之后之后再自己手动提交 offset 。 但是，细心的朋友一定会发现，这样会带来消息被重新消费的问题。比如你刚刚消费完消息之后，还没提交 offset，结果自己挂掉了，那么这个消息理论上就会被消费两次。
+        解决办法也比较粗暴，手动关闭自动提交 offset，每次在真正消费完消息之后之后再自己手动提交 offset。
+        但是，这样可能会带来消息被重新消费的问题。比如刚刚消费完消息之后，还没提交 offset，
+        结果自己挂掉了，那么这个消息理论上就会被消费两次。
 
-        Kafka 弄丢了消息
-    设置 acks = all
+    Kafka 弄丢了消息：
+        设置 acks = all
+            acks 是 Kafka 生产者（Producer）很重要的一个参数。
+            acks 的默认值即为 1，代表消息被 leader 副本接收之后就算被成功发送。
+            当配置 acks = all 代表则所有副本都要接收到该消息之后该消息才算真正成功被发送。
 
-    解决办法就是我们设置 acks = all。acks 是 Kafka 生产者(Producer) 很重要的一个参数。
+        设置 replication.factor >= 3
+            为了保证 leader 副本能有 follower 副本能同步消息，一般会为 topic 设置 replication.factor >= 3。
+            这样就可以保证每个分区（partition）至少有 3 个副本。虽然造成了数据冗余，但是带来了数据的安全性。
 
-    acks 的默认值即为1，代表我们的消息被leader副本接收之后就算被成功发送。当我们配置 acks = all 代表则所有副本都要接收到该消息之后该消息才算真正成功被发送。
+        设置 min.insync.replicas >= 2
+            min.insync.replicas 指 ISR 列表中最少的在线副本的个数（含 leader），
+            当在线的副本个数小于 min.insync.replicas 时，生产者发送消息会失败。
+            min.insync.replicas 的默认值为 1，在实际生产中应尽量避免默认值 1。
 
-    设置 replication.factor >= 3
-
-    为了保证 leader 副本能有 follower 副本能同步消息，我们一般会为 topic 设置 replication.factor >= 3。这样就可以保证每个 分区(partition) 至少有 3 个副本。虽然造成了数据冗余，但是带来了数据的安全性。
-
-    设置 min.insync.replicas > 1
-
-    一般情况下我们还需要设置 min.insync.replicas> 1 ，这样配置代表消息至少要被写入到 2 个副本才算是被成功发送。min.insync.replicas 的默认值为 1 ，在实际生产中应尽量避免默认值 1。
-
-    但是，为了保证整个 Kafka 服务的高可用性，你需要确保 replication.factor > min.insync.replicas 。为什么呢？设想一下假如两者相等的话，只要是有一个副本挂掉，整个分区就无法正常工作了。这明显违反高可用性！一般推荐设置成 replication.factor = min.insync.replicas + 1。
-
-# 重平衡
-
-    todo
+        为了保证整个 Kafka 服务的高可用性，需要确保 replication.factor > min.insync.replicas。
+        例如 default.replication.factor=3，min.insync.replicas=2 表示消息总共有 3 个副本，
+        当在线的副本大于或者等于 2 时，生产者可以继续发送消息，能够容忍 1 个备份不可用，否则不能发送消息。
+        设想一下假如两者相等的话，只要是有一个副本挂掉，整个分区就无法正常工作了。这明显违反高可用性！
+        一般推荐设置成 replication.factor = min.insync.replicas + 1。
 
 # 怎么实现延时消息
 
-    todo
     只能实现基于队列的延时，不能实现基于时间的延时（也就是任意精度的延时）。
-    
-    
-    
+    可以分别创建用于 5s，10s，30s 等延时的 topic，然后由另一个程序定时拉取到新的的 topic，再由 consumer 消费。
 
 # 消息堆积怎么处理
 
@@ -174,6 +214,8 @@
 # Kafka 的哪些场景中使用了零拷贝（Zero Copy）？
 
     todo
+    https://zhuanlan.zhihu.com/p/83398714
+    https://cloud.tencent.com/developer/article/1421266
     https://time.geekbang.org/column/article/246934?utm_source=related_read&utm_medium=article&utm_term=related_read
 
 # Kafka 怎么保证高可用
