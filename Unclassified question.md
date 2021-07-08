@@ -1,28 +1,10 @@
-<a name="index">**目录：**</a><br>
-&emsp;&emsp;<a href="#0">1 到 n 中减少了一个数，顺序被打乱，找出缺失的数</a><br>
-&emsp;&emsp;<a href="#1">给定一个奇数位升序，偶数位降序的链表，将其重新排序。</a><br>
-&emsp;&emsp;<a href="#2">天平称重问题</a><br>
-&emsp;&emsp;<a href="#3">抢 30 问题</a><br>
-&emsp;&emsp;<a href="#4">服务限流</a><br>
-&emsp;&emsp;<a href="#5">服务熔断</a><br>
-&emsp;&emsp;<a href="#6">快速排序优化？</a><br>
-&emsp;&emsp;<a href="#7">一致性哈希</a><br>
-&emsp;&emsp;<a href="#8">CAS</a><br>
-&emsp;&emsp;<a href="#9">从无限的字符流中, 随机选出 10 个字符</a><br>
-&emsp;&emsp;<a href="#10">分布式事务</a><br>
-&emsp;&emsp;<a href="#11">跳表的实现方法</a><br>
-&emsp;&emsp;<a href="#12">raft 算法</a><br>
-&emsp;&emsp;<a href="#13">负载均衡的相关算法</a><br>
-&emsp;&emsp;<a href="#14">avl tree b树与b+树，红黑树的区别和应用场景？</a><br>
-&emsp;&emsp;<a href="#15">top k 问题</a><br>
-&emsp;&emsp;<a href="#16">红黑树平衡性，复杂度</a><br>
-# <a name="0">1 到 n 中减少了一个数，顺序被打乱，找出缺失的数</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 1 到 n 中减少了一个数，顺序被打乱，找出缺失的数
 
     1. 用 1+2+...+n 减去当前输入数据的总和。（容易溢出）
     2. 对输入数据进行 Hash（可以 bitmap），然后从头到尾遍历一次。（容易溢出）
     3. 用 1^2^...^n 的结果再逐个异或当前输入数据。
 
-# <a name="1">给定一个奇数位升序，偶数位降序的链表，将其重新排序。</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 给定一个奇数位升序，偶数位降序的链表，将其重新排序。
 
     输入: 1->8->3->6->5->4->7->2->NULL
     输出: 1->2->3->4->5->6->7->8->NULL
@@ -31,7 +13,7 @@
     2. 反转偶链表，得 1->3->5->7->NULL 和 2->4->6->8->NULL
     3. 合并两个有序链表，得 1->2->3->4->5->6->7->8->NULL
 
-# <a name="2">天平称重问题</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 天平称重问题
 
     问题：
         用天平（只能比较，不能称重）从一堆小球中找出其中唯一一个较轻的，使用 x 次天平，
@@ -39,7 +21,7 @@
 
     将小球拆分为 3 份，在相同的比较次数下，可提高小球的比较数量，因此，其 y 与 x 的关系式为：y = 3^x
 
-# <a name="3">抢 30 问题</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 抢 30 问题
 
     甲乙二人轮流报数。从 1 起，每人每次可报一个数或连续报两个数。谁能报得 20 谁就获胜。
     先和同学玩一玩这个游戏。如果由你先报数，你能保证获胜吗？
@@ -61,7 +43,7 @@
         让 20 就要抢 19，并且依次抢 16、13、10、7、4、1。
         因此，要先报 1，再根据对方报数情况依次抢 4、7、10、13、16、19，这样就把 20 让给了对方。
 
-# <a name="4">服务限流</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 服务限流
 
     参考：
         1. [一文搞懂高频面试题之限流算法，从算法原理到实现，再到对比分析](https://juejin.cn/post/6870396751178629127#heading-12)
@@ -125,7 +107,7 @@
 
     分布式限流可以使用 Redis+Lua 脚本的方式实现上述算法。
 
-# <a name="5">服务熔断</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 服务熔断
 
     参考：
         1. [服务容错模式](https://tech.meituan.com/2016/11/11/service-fault-tolerant-pattern.html)
@@ -159,47 +141,79 @@
         如果这一定数量的请求有调用失败的情况，则认为导致之前调用失败的问题仍然存在，熔断器切回到断开方式，
         然后开始重置计时器来给系统一定的时间来修正错误。半断开状态能够有效防止正在恢复中的服务被突然而来的大量请求再次拖垮。
 
-# <a name="6">快速排序优化？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 快速排序优化？
 
     三数（最开始，最末尾，中间）取中值，为了使基准值更加随机，避免待排序数组已经基本有序，时间复杂度退化
 
-# <a name="7">一致性哈希</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 从无限的字符流中, 随机选出 10 个字符
+
+    参考：
+        1. [用Python写算法 | 蓄水池算法实现随机抽样](https://juejin.cn/post/6844903651706667022)
+        2. [Reservoir Sampling - 蓄水池抽样](https://www.cnblogs.com/HappyAngel/archive/2011/02/07/1949762.html)
+        3. [蓄水池抽样算法（Reservoir Sampling）](https://www.jianshu.com/p/7a9ea6ece2af)
+
+    蓄水池采样算法:
+    算法思路大致如下：
+
+        先把前 k 个数放入蓄水池，
+        对第 i 个数，以 k/i 概率决定是否要把它换入蓄水池，换入时随机的选取一个作为替换项，这样一直做下去，
+        对于任意的样本空间 n，对每个数的选取概率都为 k/n。也就是说对每个数选取概率相等。
+
+<p align='center'>
+    <img src='./images/Unclassified question/蓄水池采样算法证明.png'>
+</p>
+
+    分布式蓄水池抽样：
+        1. 假设有 K 台机器，将大数据集分成 K 个数据流，每台机器使用单机版蓄水池抽样处理一个数据流，抽样 m 个数据，
+           并最后记录处理的数据量为 N1，N2，...，Nk，...，NK（假设 m < Nk）。N1+N2+...+NK=N。
+        2. 取 [1, N] 一个随机数 d，
+           若 d<N1，则在第一台机器的蓄水池中等概率不放回地（1/m）选取一个数据；
+           若 N1<=d<(N1+N2)，则在第二台机器的蓄水池中等概率不放回地选取一个数据；
+           依此类推，重复 m 次，则最终从 N 大数据集中选出 m 个数据。
+
+        m/N 的概率验证如下：
+            1. 在第 k 台机器中的蓄水池，某个数据被选取的概率为 m/Nk。
+            2. 从第 k 台机器的蓄水池中选取一个数据放进最终蓄水池的概率为 Nk/N。
+            3. 第 k 台机器蓄水池的一个数据被选中的概率为 1/m。（不放回选取时等概率的）
+            4. 重复 m 次选取，则每个数据被选中的概率为 m*(m/Nk*Nk/N*1/m)=m/N。
+
+# 分布式共识算法（Distributed Consensus Algorithm）
+
+    todo
+    http://icyfenix.cn/distribution/consensus/gossip.html
+    https://tech.youzan.com/cap-coherence-protocol-and-application-analysis/
+    https://juejin.cn/post/6977184839447363592#heading-8
+    https://mp.weixin.qq.com/s?__biz=MzAwMjI0ODk0NA==&mid=2451950743&idx=1&sn=df1c600f636c8d9b119f534750c007eb&chksm=8d1c3508ba6bbc1e6e4def2ea4c25d9c5e69013d463af31f6bc78cacbc3735ccea455842303d&scene=21#wechat_redirect
+
+# 分布式事务
 
     todo
 
-# <a name="8">CAS</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 跳表的实现方法
 
     todo
 
-# <a name="9">从无限的字符流中, 随机选出 10 个字符</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 一致性哈希
 
     todo
 
-# <a name="10">分布式事务</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# CAS
 
     todo
 
-# <a name="11">跳表的实现方法</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 负载均衡的相关算法
 
     todo
 
-# <a name="12">raft 算法</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
-
-    todo
-
-# <a name="13">负载均衡的相关算法</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
-
-    todo
-
-# <a name="14">avl tree b树与b+树，红黑树的区别和应用场景？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# avl tree b树与b+树，红黑树的区别和应用场景？
 
     todo
     红黑树与avl树的区别，为什么有这些区别？
 
-# <a name="15">top k 问题</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# top k 问题
 
     todo
 
-# <a name="16">红黑树平衡性，复杂度</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# 红黑树平衡性，复杂度
 
     todo

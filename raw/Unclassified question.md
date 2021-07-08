@@ -145,17 +145,45 @@
 
     三数（最开始，最末尾，中间）取中值，为了使基准值更加随机，避免待排序数组已经基本有序，时间复杂度退化
 
-# 一致性哈希
-
-    todo
-
-# CAS
-
-    todo
-
 # 从无限的字符流中, 随机选出 10 个字符
 
+    参考：
+        1. [用Python写算法 | 蓄水池算法实现随机抽样](https://juejin.cn/post/6844903651706667022)
+        2. [Reservoir Sampling - 蓄水池抽样](https://www.cnblogs.com/HappyAngel/archive/2011/02/07/1949762.html)
+        3. [蓄水池抽样算法（Reservoir Sampling）](https://www.jianshu.com/p/7a9ea6ece2af)
+
+    蓄水池采样算法:
+    算法思路大致如下：
+
+        先把前 k 个数放入蓄水池，
+        对第 i 个数，以 k/i 概率决定是否要把它换入蓄水池，换入时随机的选取一个作为替换项，这样一直做下去，
+        对于任意的样本空间 n，对每个数的选取概率都为 k/n。也就是说对每个数选取概率相等。
+
+<p align='center'>
+    <img src='./images/Unclassified question/蓄水池采样算法证明.png'>
+</p>
+
+    分布式蓄水池抽样：
+        1. 假设有 K 台机器，将大数据集分成 K 个数据流，每台机器使用单机版蓄水池抽样处理一个数据流，抽样 m 个数据，
+           并最后记录处理的数据量为 N1，N2，...，Nk，...，NK（假设 m < Nk）。N1+N2+...+NK=N。
+        2. 取 [1, N] 一个随机数 d，
+           若 d<N1，则在第一台机器的蓄水池中等概率不放回地（1/m）选取一个数据；
+           若 N1<=d<(N1+N2)，则在第二台机器的蓄水池中等概率不放回地选取一个数据；
+           依此类推，重复 m 次，则最终从 N 大数据集中选出 m 个数据。
+
+        m/N 的概率验证如下：
+            1. 在第 k 台机器中的蓄水池，某个数据被选取的概率为 m/Nk。
+            2. 从第 k 台机器的蓄水池中选取一个数据放进最终蓄水池的概率为 Nk/N。
+            3. 第 k 台机器蓄水池的一个数据被选中的概率为 1/m。（不放回选取时等概率的）
+            4. 重复 m 次选取，则每个数据被选中的概率为 m*(m/Nk*Nk/N*1/m)=m/N。
+
+# 分布式共识算法（Distributed Consensus Algorithm）
+
     todo
+    http://icyfenix.cn/distribution/consensus/gossip.html
+    https://tech.youzan.com/cap-coherence-protocol-and-application-analysis/
+    https://juejin.cn/post/6977184839447363592#heading-8
+    https://mp.weixin.qq.com/s?__biz=MzAwMjI0ODk0NA==&mid=2451950743&idx=1&sn=df1c600f636c8d9b119f534750c007eb&chksm=8d1c3508ba6bbc1e6e4def2ea4c25d9c5e69013d463af31f6bc78cacbc3735ccea455842303d&scene=21#wechat_redirect
 
 # 分布式事务
 
@@ -165,7 +193,11 @@
 
     todo
 
-# raft 算法
+# 一致性哈希
+
+    todo
+
+# CAS
 
     todo
 
