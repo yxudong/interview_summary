@@ -183,6 +183,8 @@
     http://icyfenix.cn/distribution/consensus/gossip.html
     https://tech.youzan.com/cap-coherence-protocol-and-application-analysis/
     https://juejin.cn/post/6977184839447363592#heading-8
+    https://catkang.github.io/2017/06/30/raft-subproblem.html
+    https://my.oschina.net/pingpangkuangmo/blog/776714
     https://mp.weixin.qq.com/s?__biz=MzAwMjI0ODk0NA==&mid=2451950743&idx=1&sn=df1c600f636c8d9b119f534750c007eb&chksm=8d1c3508ba6bbc1e6e4def2ea4c25d9c5e69013d463af31f6bc78cacbc3735ccea455842303d&scene=21#wechat_redirect
 
 # 分布式事务
