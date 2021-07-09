@@ -3,7 +3,7 @@
 &emsp;&emsp;<a href="#1">slice 的底层实现</a><br>
 &emsp;&emsp;<a href="#2">slice 扩容策略</a><br>
 &emsp;&emsp;<a href="#3">Map 实现原理</a><br>
-&emsp;&emsp;<a href="#4">Map 中的 key 为什么是无序的</a><br>
+&emsp;&emsp;<a href="#4">map 中的 key 为什么是无序的</a><br>
 &emsp;&emsp;<a href="#5">使用运算符"+"连接字符串会有性能问题吗？</a><br>
 &emsp;&emsp;<a href="#6">怎么高效拼接字符串？</a><br>
 &emsp;&emsp;<a href="#7">Go 在函数参数传递的时候是值传递还是引用传递？</a><br>
@@ -78,7 +78,7 @@
         3. [深度解密Go语言之map](https://www.cnblogs.com/qcrao-2018/p/10903807.html)
 
     底层使用 hash table，用链表（拉链法）来解决冲突，出现冲突时，不是每一个 key 都申请一个结构通过链表串起来，
-    而是以 bmap 为最小粒度挂载，一个 bmap 可以放8个 kv。
+    而是以 bmap 为最小粒度挂载，一个 bmap 可以放 8 个 kv。
     在哈希函数的选择上，会在程序启动时，检测 cpu 是否支持 aes，如果支持，则使用 aes hash，否则使用 memhash。
     每个 Map 的底层结构是 hmap，是有若干个结构为 bmap 的 bucket 组成的数组。每个 bucket 底层都采用链表结构。
 
@@ -90,12 +90,12 @@
         哈希在存储元素过多时会触发扩容操作，每次都会将桶的数量翻倍，扩容过程不是原子的，而是通过 runtime.growWork 增量触发的，
         在扩容期间访问哈希表时会使用旧桶，向哈希表写入数据时会触发旧桶元素的分流。
 
-# <a name="4">Map 中的 key 为什么是无序的</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="4">map 中的 key 为什么是无序的</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
         1. [map 中的 key 为什么是无序的](https://www.bookstack.cn/read/qcrao-Go-Questions/map-map%20%E4%B8%AD%E7%9A%84%20key%20%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E6%97%A0%E5%BA%8F%E7%9A%84.md)
 
-    Map 在扩容后，会发生 key 的搬迁，原来落在同一个 bucket 中的 key，搬迁后，有些 key 的位置发生了重大的变化。
+    map 在扩容后，会发生 key 的搬迁，原来落在同一个 bucket 中的 key，搬迁后，有些 key 的位置发生了重大的变化。
     这样，遍历 map 的结果就不可能按原来的顺序了。
 
     当然，如果就一个 hard code 的 map，不会向 map 进行插入删除的操作，按理说每次遍历这样的 map 都会返回一个固定顺序的 key/value 序列。
