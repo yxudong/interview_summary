@@ -80,7 +80,7 @@
     底层使用 hash table，用链表（拉链法）来解决冲突，出现冲突时，不是每一个 key 都申请一个结构通过链表串起来，
     而是以 bmap 为最小粒度挂载，一个 bmap 可以放 8 个 kv。
     在哈希函数的选择上，会在程序启动时，检测 cpu 是否支持 aes，如果支持，则使用 aes hash，否则使用 memhash。
-    每个 Map 的底层结构是 hmap，是有若干个结构为 bmap 的 bucket 组成的数组。每个 bucket 底层都采用链表结构。
+    每个 Map 的底层结构是 hmap，是由若干个结构为 bmap 的 bucket 组成的数组。每个 bucket 底层都采用链表结构。
 
 <p align='center'>
     <img src='./images/Go/Go-Map 底层结构.png'>
@@ -163,6 +163,9 @@
 
 # <a name="11">for-range 对遍历的元素取地址加到另外一个切片后有什么问题？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
+    参考：
+        1. [5.1 for 和 range](https://draveness.me/golang/docs/part2-foundation/ch05-keyword/golang-for-range/)
+
     ```
     func main() {
         arr := []int{1, 2, 3}
@@ -178,9 +181,9 @@
     // 输出 3 3 3
     ```
 
-    在 for range 中，变量 v 每次迭代的值都是赋值给 v，该变量的内存地址始终未变，
-    这样把它的地址追加到新的切片中，该切片保存的都是同一个地址。
-    可以在 newArr = append(newArr, &v) 前面加上 v := v，可以通过下标取原切片的值
+    遇到这种同时遍历索引和元素的 range 循环时，Go 会创建一个额外的变量去存储循环的元素，
+    所以在每一次迭代中，该变量都会被重新赋值，由于这里使用的是指针，所以就出现上面的这种情况。
+    可以用 &arr[i] 去替代 &v
 
 # <a name="12">for-range 迭代修改变量问题</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
@@ -197,12 +200,12 @@
     }
 
     func main()  {
-        u := []user{
-            {"asong",23},
-            {"song",19},
-            {"asong2020",18},
+        u := []user {
+            {"asong", 23},
+            {"song", 19},
+            {"asong2020", 18},
         }
-        for _,v := range u{
+        for _, v := range u {
             if v.age != 18{
                 v.age = 20
             }
@@ -231,7 +234,7 @@
     }
 
     func (v *val) MyMethod() {
-            fmt.Println(v)
+        fmt.Println(v)
     }
     ```
 
@@ -247,8 +250,9 @@
     ```
     或
     ```
-    for i := range valslice {
-        val := valslice[i]
+    for i := range values {
+        // 在循环内定义的变量在循环遍历的过程中是不共享的
+        val := values[i]
         go func() {
             fmt.Println(val)
         }()
