@@ -877,7 +877,7 @@
 # <a name="33">什么时候使用 channel，什么时候使用 sync？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
-        https://zhuanlan.zhihu.com/p/213712219
+        1. [《Go语言并发之道》读后感-第二章](https://zhuanlan.zhihu.com/p/213712219)
 
 <p align='center'>
     <img src='./images/Go/Go-Primitive vs Channel.jpg'>
