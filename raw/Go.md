@@ -310,6 +310,10 @@
 
 # context 包
 
+    todo
+	https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-context/
+	https://zhuanlan.zhihu.com/p/140527200
+	
     用途：
         是在不同 Goroutine 之间同步请求特定数据、取消信号以及处理请求的截止日期。
         可能会创建多个 Goroutine 来处理一次请求，不使用 context，每个 Goroutine 可能无限执行下去。
@@ -350,10 +354,10 @@
 # sync.Map
 
     参考：
-        [由浅入深聊聊Golang的sync.Map](https://juejin.cn/post/6844903895227957262)
+        1. [由浅入深聊聊Golang的sync.Map](https://juejin.cn/post/6844903895227957262)
 
     map 在并发情况下，只读是线程安全的，同时写线程不安全。
-    可以通过 sync.RWMutex 自己实现并发安全的 map
+    可以通过 sync.RWMutex 自己实现并发安全的 map。
 
     官方实现的 sync.Map 的核心数据结构:
     ```
@@ -364,7 +368,7 @@
         misses int
     }
     ```
-    mu 加锁作用。保护后文的 dirty 字段
+    mu 加锁作用。保护后文的 dirty 字段。
     read 存读的数据。因为是 atomic.Value 类型，只读，所以并发是安全的。实际存的是 readOnly 的数据结构。
     misses 计数作用。每次从 read 中读失败，则计数 +1。
     dirty 包含最新写入的数据。当 misses 计数达到一定值，将其赋值给 read。
@@ -375,12 +379,14 @@
         优点：通过读写分离，降低锁时间来提高效率。
         缺点：不适用于大量写的场景，这样会导致 read map 读不到数据而进一步加锁读取，
               同时 dirty map 也会一直晋升为 read map，整体性能较差。
-    适用场景：大量读，少量写
+    适用场景：大量读，少量写。
 
 # sync.pool
 
+    todo
     参考：https://zhuanlan.zhihu.com/p/133638023
           https://juejin.cn/post/6844903903046320136#heading-14
+		  https://zhuanlan.zhihu.com/p/133638023
 
     频繁地分配、回收内存会给 GC 带来一定的负担，严重的时候会引起 CPU 的毛刺，sync.Pool 可以将暂时不用的对象缓存起来，
     待下次需要的时候直接使用，不用再次经过内存分配，复用对象的内存，减轻 GC 的压力，提升系统的性能。
@@ -612,13 +618,13 @@
         全局队列（Global Queue）：存放等待运行的 G。
         P 的本地队列：同全局队列类似，存放的也是等待运行的G，存的数量有限，不超过256个。
                       新建 G 时，G 优先加入到 P 的本地队列，如果队列满了，则会把本地队列中一半的 G 移动到全局队列。
-        P列表：所有的 P 都在程序启动时创建，并保存在数组中，最多有 GOMAXPROCS 个。
+        P 列表：所有的 P 都在程序启动时创建，并保存在数组中，最多有 GOMAXPROCS 个。
         M：线程想运行任务就得获取 P，从 P 的本地队列获取 G，
-           P 队列为空时，M 也会尝试从全局队列拿一批 G放到 P 的本地队列，
+           P 队列为空时，M 也会尝试从全局队列拿一批 G 放到 P 的本地队列，
            或从其他 P 的本地队列偷一半放到自己 P 的本地队列。
            M 运行 G，G 执行之后，M 会从 P 获取下一个 G，不断重复下去。
         Goroutine 调度器和 OS 调度器是通过 M 结合起来的，
-        每个 M 都代表了1个内核线程，OS 调度器负责把内核线程分配到 CPU 的核上执行。
+        每个 M 都代表了 1 个内核线程，OS 调度器负责把内核线程分配到 CPU 的核上执行。
 
 <p align='center'>
     <img src='./images/Go/Go-G-P-M 模型的结构.jpg'>
