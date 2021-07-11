@@ -311,9 +311,9 @@
 # context 包
 
     todo
-	https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-context/
-	https://zhuanlan.zhihu.com/p/140527200
-	
+    https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-context/
+    https://zhuanlan.zhihu.com/p/140527200
+
     用途：
         是在不同 Goroutine 之间同步请求特定数据、取消信号以及处理请求的截止日期。
         可能会创建多个 Goroutine 来处理一次请求，不使用 context，每个 Goroutine 可能无限执行下去。
@@ -386,7 +386,7 @@
     todo
     参考：https://zhuanlan.zhihu.com/p/133638023
           https://juejin.cn/post/6844903903046320136#heading-14
-		  https://zhuanlan.zhihu.com/p/133638023
+          https://zhuanlan.zhihu.com/p/133638023
 
     频繁地分配、回收内存会给 GC 带来一定的负担，严重的时候会引起 CPU 的毛刺，sync.Pool 可以将暂时不用的对象缓存起来，
     待下次需要的时候直接使用，不用再次经过内存分配，复用对象的内存，减轻 GC 的压力，提升系统的性能。
@@ -581,7 +581,7 @@
         1. [Golang 的 Goroutine 是如何实现的？ - 凌霄Leon的回答 - 知乎](https://www.zhihu.com/question/20862617/answer/131341519)
         2. [Golang 的 Goroutine 是如何实现的？ - ZeaTalk的回答 - 知乎](https://www.zhihu.com/question/20862617/answer/710435704)
         3. [[典藏版] Golang 调度器 GMP 原理与调度全分析](https://learnku.com/articles/41728)
-        4. [Go 语言设计与实现 6.5 调度器](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-Goroutine/#%E7%BA%BF%E7%A8%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F)
+        4. [Go 语言设计与实现 6.5 调度器](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-goroutine/)
         5. [Go语言为何不使用异步文件IO和PoolDesc？ - 知乎](https://www.zhihu.com/question/54743395)
         6. [Go netpoller 原生网络模型之源码全面揭秘](https://strikefreedom.top/go-netpoll-io-multiplexing-reactor)
         7. [为什么要使用 Go 语言？Go 语言的优势在哪里？ - 腾讯技术工程的回答 - 知乎](https://www.zhihu.com/question/21409296/answer/1040884859)
@@ -616,7 +616,7 @@
         M — 表示操作系统的线程，它由操作系统的调度器调度和管理；
         P — 表示处理器，它可以被看做运行在线程上的本地调度器
         全局队列（Global Queue）：存放等待运行的 G。
-        P 的本地队列：同全局队列类似，存放的也是等待运行的G，存的数量有限，不超过256个。
+        P 的本地队列：同全局队列类似，存放的也是等待运行的 G，存的数量有限，不超过 256 个。
                       新建 G 时，G 优先加入到 P 的本地队列，如果队列满了，则会把本地队列中一半的 G 移动到全局队列。
         P 列表：所有的 P 都在程序启动时创建，并保存在数组中，最多有 GOMAXPROCS 个。
         M：线程想运行任务就得获取 P，从 P 的本地队列获取 G，
