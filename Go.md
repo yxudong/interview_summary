@@ -2,7 +2,7 @@
 &emsp;&emsp;<a href="#0">Go 的数据类型 byte 和 rune</a><br>
 &emsp;&emsp;<a href="#1">slice 的底层实现</a><br>
 &emsp;&emsp;<a href="#2">slice 扩容策略</a><br>
-&emsp;&emsp;<a href="#3">Map 实现原理</a><br>
+&emsp;&emsp;<a href="#3">map 实现原理</a><br>
 &emsp;&emsp;<a href="#4">map 中的 key 为什么是无序的</a><br>
 &emsp;&emsp;<a href="#5">使用运算符"+"连接字符串会有性能问题吗？</a><br>
 &emsp;&emsp;<a href="#6">怎么高效拼接字符串？</a><br>
@@ -70,7 +70,7 @@
         2. 如果原来数组的容量已经达到了最大值，再想扩容，Go 默认会先开一片内存区域，把原来的值拷贝过来，然后再执行 append() 操作。
            这种情况丝毫不影响原数组。
 
-# <a name="3">Map 实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="3">map 实现原理</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
         1. [Go 语言设计与实现 3.3 哈希表](https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/)
@@ -80,10 +80,10 @@
     底层使用 hash table，用链表（拉链法）来解决冲突，出现冲突时，不是每一个 key 都申请一个结构通过链表串起来，
     而是以 bmap 为最小粒度挂载，一个 bmap 可以放 8 个 kv。
     在哈希函数的选择上，会在程序启动时，检测 cpu 是否支持 aes，如果支持，则使用 aes hash，否则使用 memhash。
-    每个 Map 的底层结构是 hmap，是由若干个结构为 bmap 的 bucket 组成的数组。每个 bucket 底层都采用链表结构。
+    每个 map 的底层结构是 hmap，是由若干个结构为 bmap 的 bucket 组成的数组。每个 bucket 底层都采用链表结构。
 
 <p align='center'>
-    <img src='./images/Go/Go-Map 底层结构.png'>
+    <img src='./images/Go/Go-map 底层结构.png'>
 </p>
 
     扩容的过程
@@ -105,7 +105,7 @@
     并且是从这个 bucket 的一个随机序号的 cell 开始遍历。
     这样，即使是一个写死的 map，仅仅只是遍历它，也不太可能会返回一个固定序列的 key/value 对。
 
-    “迭代 map 的结果是无序的”这个特性是从 go 1.0 开始加入的。
+    “迭代 map 的结果是无序的”这个特性是从 Go 1.0 开始加入的。
 
 # <a name="5">使用运算符"+"连接字符串会有性能问题吗？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
