@@ -741,7 +741,7 @@
 # <a name="28">Go 的垃圾回收机制</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     参考：
-        1. [Go 语言设计与实现 7.2 垃圾收集器](https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/#722-%E6%BC%94%E8%BF%9B%E8%BF%87%E7%A8%8B)
+        1. [Go 语言设计与实现 7.2 垃圾收集器](https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/)
         2. [Golang三色标记+混合写屏障GC模式全分析](https://zhuanlan.zhihu.com/p/334999060)
         3. [白话Go语言内存管理三部曲（三）垃圾回收原理](https://zhuanlan.zhihu.com/p/264789260)
 
@@ -752,7 +752,7 @@
     在标记准备和标记结束阶段会需要 STW，标记阶段会减少程序的性能，而清理阶段是不会对程序有影响的。
 
     演进过程：
-        1. V1.3 之前标记-清除(mark and sweep)算法
+        1. V1.3 之前标记-清除（mark and sweep）算法
         2. V1.5 实现了基于三色标记清扫的并发垃圾收集器
         3. V1.8 混合写屏障机制
 
