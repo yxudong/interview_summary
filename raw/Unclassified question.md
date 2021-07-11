@@ -198,6 +198,8 @@
 # 一致性哈希
 
     todo
+    https://juejin.cn/post/6844903750860013576
+    https://www.jianshu.com/p/4163916a2a8a
 
 # CAS
 

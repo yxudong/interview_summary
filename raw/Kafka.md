@@ -105,9 +105,9 @@
 
         Controller 的选举工作依赖于 Zookeeper，选举成功后，Zookeeper会创建一个 /controller 临时节点。
 
-    Zookeeper带来的问题：
+    Zookeeper 带来的问题：
         1. 运维复杂度
-        2. Controller故障处理
+        2. Controller 故障处理
             Kafaka 依赖一个单一 Controller 节点跟 Zookeeper 进行交互，
             如果这个 Controller 节点发生了故障，就需要从 broker 中选择新的 Controller。
             这个过程非常耗时。
