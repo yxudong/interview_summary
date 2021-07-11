@@ -33,7 +33,7 @@
 &emsp;&emsp;<a href="#31">Go 和 Python 里面的协程有什么区别？</a><br>
 &emsp;&emsp;<a href="#32">为什么说使用通信共享内存，而不是使用共享内存通信？</a><br>
 &emsp;&emsp;<a href="#33">什么时候使用 channel，什么时候使用 sync？</a><br>
-&emsp;&emsp;<a href="#34">多协程查询切片问题？</a><br>
+&emsp;&emsp;<a href="#34">多协程操作切片</a><br>
 # <a name="0">Go 的数据类型 rune 和 byte</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     byte 是 uint8 的别名，它表示的是 ACSII 表中的一个字符。
@@ -883,6 +883,14 @@
     <img src='./images/Go/Go-Primitive vs Channel.jpg'>
 </p>
 
-# <a name="34">多协程查询切片问题？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="34">多协程操作切片</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
-    todo
+    参考：
+        1. [并发访问 slice 如何做到优雅和安全?](https://juejin.cn/post/6844904134592692231)
+
+    如果触发 slice 对应的原数组扩容，不会引起竞争。
+    但是如果同时对同一个数组（slice 底层的数组）写数据，会引起竞争。
+
+    解决方法：
+        1. 自己实现加锁
+        2. 使用 channel

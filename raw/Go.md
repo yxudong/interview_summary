@@ -847,6 +847,14 @@
     <img src='./images/Go/Go-Primitive vs Channel.jpg'>
 </p>
 
-# 多协程查询切片问题？
+# 多协程操作切片
 
-    todo
+    参考：
+        1. [并发访问 slice 如何做到优雅和安全?](https://juejin.cn/post/6844904134592692231)
+
+    如果触发 slice 对应的原数组扩容，不会引起竞争。
+    但是如果同时对同一个数组（slice 底层的数组）写数据，会引起竞争。
+
+    解决方法：
+        1. 自己实现加锁
+        2. 使用 channel
