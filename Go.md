@@ -1,5 +1,5 @@
 <a name="index">**目录：**</a><br>
-&emsp;&emsp;<a href="#0">Go 的数据类型 rune 和 byte</a><br>
+&emsp;&emsp;<a href="#0">Go 的数据类型 byte 和 rune</a><br>
 &emsp;&emsp;<a href="#1">slice 的底层实现</a><br>
 &emsp;&emsp;<a href="#2">slice 扩容策略</a><br>
 &emsp;&emsp;<a href="#3">Map 实现原理</a><br>
@@ -34,7 +34,7 @@
 &emsp;&emsp;<a href="#32">为什么说使用通信共享内存，而不是使用共享内存通信？</a><br>
 &emsp;&emsp;<a href="#33">什么时候使用 channel，什么时候使用 sync？</a><br>
 &emsp;&emsp;<a href="#34">多协程操作切片</a><br>
-# <a name="0">Go 的数据类型 rune 和 byte</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="0">Go 的数据类型 byte 和 rune</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     byte 是 uint8 的别名，它表示的是 ACSII 表中的一个字符。
     rune 是 int32 的别名，几乎在所有方面等同于 int32，它表示的是一个 Unicode 字符。

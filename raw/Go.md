@@ -1,4 +1,4 @@
-# Go 的数据类型 rune 和 byte
+# Go 的数据类型 byte 和 rune
 
     byte 是 uint8 的别名，它表示的是 ACSII 表中的一个字符。
     rune 是 int32 的别名，几乎在所有方面等同于 int32，它表示的是一个 Unicode 字符。
