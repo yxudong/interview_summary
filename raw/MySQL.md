@@ -40,6 +40,8 @@
 # 索引为什么使用 b+ 树，不是 b 树？
 
     todo
+    https://segmentfault.com/a/1190000021488885
+    https://zhuanlan.zhihu.com/p/345414925#:~:text=B%2B树与B树,完成查询范围的查找。
 
 # select * from A where x=1 and y > 1 order by z；让你设计索引什么设计？为啥这样？还有如果按照你设计的索引，mysql他的执行查询的树状图是怎样的？可否画一下？
 
