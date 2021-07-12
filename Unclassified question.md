@@ -216,6 +216,8 @@
 # <a name="11">一致性哈希</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
+    https://juejin.cn/post/6844903750860013576
+    https://www.jianshu.com/p/4163916a2a8a
 
 # <a name="12">CAS</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
