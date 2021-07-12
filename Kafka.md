@@ -2,7 +2,7 @@
 &emsp;&emsp;<a href="#0">为什么使用 Kafka（消息队列）？</a><br>
 &emsp;&emsp;<a href="#1">消息队列有什么优点和缺点？</a><br>
 &emsp;&emsp;<a href="#2">Kafka 的消息模型</a><br>
-&emsp;&emsp;<a href="#3">什么是Producer、Consumer、Broker、Topic、Partition？</a><br>
+&emsp;&emsp;<a href="#3">什么是 Producer、Consumer、Broker、Topic、Partition？</a><br>
 &emsp;&emsp;<a href="#4">Kafka 的多副本机制了解吗？带来了什么好处？</a><br>
 &emsp;&emsp;<a href="#5">Kafka 的多分区（Partition）以及多副本（Replica）机制有什么好处呢？</a><br>
 &emsp;&emsp;<a href="#6">Zookeeper 和 Kafka 的关系</a><br>
@@ -46,7 +46,7 @@
 
     Kafka 采用的就是发布-订阅模型。
 
-# <a name="3">什么是Producer、Consumer、Broker、Topic、Partition？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+# <a name="3">什么是 Producer、Consumer、Broker、Topic、Partition？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     Kafka 将生产者发布的消息发送到 Topic（主题） 中，需要这些消息的消费者可以订阅这些 Topic（主题），如下图所示：
 
@@ -105,9 +105,9 @@
 
         Controller 的选举工作依赖于 Zookeeper，选举成功后，Zookeeper会创建一个 /controller 临时节点。
 
-    Zookeeper带来的问题：
+    Zookeeper 带来的问题：
         1. 运维复杂度
-        2. Controller故障处理
+        2. Controller 故障处理
             Kafaka 依赖一个单一 Controller 节点跟 Zookeeper 进行交互，
             如果这个 Controller 节点发生了故障，就需要从 broker 中选择新的 Controller。
             这个过程非常耗时。
