@@ -594,7 +594,7 @@
     ```
     qcount — Channel 中的元素个数；
     dataqsiz — Channel 中的循环队列的长度；
-    buf — Channel 的缓冲区数据指针（只针对有缓冲的 channel，指向底层循环数组）；
+    buf — Channel 的缓冲区数据指针（只针对有缓冲的 channel，指向底层循环链表）；
     sendx — Channel 的发送操作处理到的位置；
     recvx — Channel 的接收操作处理到的位置；
     elemsize 和 elemtype 分别表示当前 Channel 能够收发的元素类型和大小；
