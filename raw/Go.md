@@ -577,6 +577,7 @@
 
 # Goroutine 原理（调度器）
 
+    todo
     参考：
         1. [Golang 的 Goroutine 是如何实现的？ - 凌霄Leon的回答 - 知乎](https://www.zhihu.com/question/20862617/answer/131341519)
         2. [Golang 的 Goroutine 是如何实现的？ - ZeaTalk的回答 - 知乎](https://www.zhihu.com/question/20862617/answer/710435704)
@@ -641,6 +642,12 @@
         M 与 P 的数量没有绝对关系，一个 M 阻塞，P 就会去创建或者切换另一个 M，
         所以，即使 P 的默认数量是 1，也有可能会创建很多个 M 出来。
 
+    G 共有多少种状态：
+        todo
+
+    P 共有多少种状态：
+        todo
+
     调度循环：
         调度器启动之后，Go 语言运行时会初始化线程并调用 runtime.schedule 进入调度循环：
 
@@ -697,7 +704,7 @@
                实际上是通过 Go runtime 中的 netpoller 通过 Non-block socket + I/O 多路复用机制“模拟”出来的。
             3. 当调用一些系统方法的时候（如文件 I/O 等，详见参考 5），如果系统方法调用的时候发生阻塞，
                这种情况下，网络轮询器（NetPoller）无法使用，而进行系统调用的 G1 将阻塞当前 M1，此时 P 会和 M1 解绑，
-               调度器引入其它 M 来服务 M1 的P。
+               调度器引入其它 M 来服务 M1 的 P。
             4. 如果在 Goroutine 去执行一个 sleep 操作，导致 M 被阻塞了。
                Go 程序后台有一个监控线程 sysmon，它监控那些长时间运行的 G 任务然后设置可以强占的标识符，
                别的 Goroutine 就可以抢先进来执行。
