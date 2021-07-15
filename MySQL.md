@@ -7,6 +7,7 @@
 &emsp;&emsp;<a href="#5">两个索引列 or 会用到索引吗</a><br>
 &emsp;&emsp;<a href="#6">索引为什么使用 b+ 树，不是 b 树？</a><br>
 &emsp;&emsp;<a href="#7">select * from A where x=1 and y > 1 order by z；让你设计索引什么设计？为啥这样？还有如果按照你设计的索引，mysql他的执行查询的树状图是怎样的？可否画一下？</a><br>
+&emsp;&emsp;<a href="#8">大表 DDL 方案</a><br>
 # <a name="0">select 语句完整的执行顺序</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     1、from子句组装来自不同数据源的数据（先join在on）；
@@ -55,3 +56,10 @@
 # <a name="7">select * from A where x=1 and y > 1 order by z；让你设计索引什么设计？为啥这样？还有如果按照你设计的索引，mysql他的执行查询的树状图是怎样的？可否画一下？</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo
+
+# <a name="8">大表 DDL 方案</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+    todo
+    https://www.modb.pro/db/40251
+    https://zhuanlan.zhihu.com/p/115277009
+    https://www.cnblogs.com/henryhappier/archive/2010/07/05/1771295.html

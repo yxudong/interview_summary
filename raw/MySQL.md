@@ -46,3 +46,10 @@
 # select * from A where x=1 and y > 1 order by z；让你设计索引什么设计？为啥这样？还有如果按照你设计的索引，mysql他的执行查询的树状图是怎样的？可否画一下？
 
     todo
+
+# 大表 DDL 方案
+
+    todo
+    https://www.modb.pro/db/40251
+    https://zhuanlan.zhihu.com/p/115277009
+    https://www.cnblogs.com/henryhappier/archive/2010/07/05/1771295.html

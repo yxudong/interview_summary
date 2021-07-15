@@ -16,6 +16,10 @@
 &emsp;&emsp;<a href="#14">avl tree b树与b+树，红黑树的区别和应用场景？</a><br>
 &emsp;&emsp;<a href="#15">top k 问题</a><br>
 &emsp;&emsp;<a href="#16">红黑树平衡性，复杂度</a><br>
+&emsp;&emsp;<a href="#17">朋友圈设计</a><br>
+&emsp;&emsp;<a href="#18">日志写入系统</a><br>
+&emsp;&emsp;<a href="#19">海量评论系统</a><br>
+&emsp;&emsp;<a href="#20">多活系统</a><br>
 # <a name="0">1 到 n 中减少了一个数，顺序被打乱，找出缺失的数</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     1. 用 1+2+...+n 减去当前输入数据的总和。（容易溢出）
@@ -238,5 +242,29 @@
     todo
 
 # <a name="16">红黑树平衡性，复杂度</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+    todo
+
+# <a name="17">朋友圈设计</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+    todo
+    https://cloud.tencent.com/developer/article/1082731
+    扩散写
+
+# <a name="18">日志写入系统</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+    todo
+    https://cloud.tencent.com/developer/article/1328501
+    https://juejin.cn/post/6922811488784613389
+
+# <a name="19">海量评论系统</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
+
+    todo
+    像知乎这样的评论回复模式，数据库应该怎么设计比较好，考虑性能、可扩展性等？ - Syter的回答 - 知乎
+    https://www.zhihu.com/question/38959595/answer/79084228
+
+    https://github.com/aylei/interview#%E4%B8%89%E9%9D%A2-2
+
+# <a name="20">多活系统</a><a style="float:right;text-decoration:none;" href="#index">[Top]</a>
 
     todo

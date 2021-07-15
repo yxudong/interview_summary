@@ -222,3 +222,27 @@
 # 红黑树平衡性，复杂度
 
     todo
+
+# 朋友圈设计
+
+    todo
+    https://cloud.tencent.com/developer/article/1082731
+    扩散写
+
+# 日志写入系统
+
+    todo
+    https://cloud.tencent.com/developer/article/1328501
+    https://juejin.cn/post/6922811488784613389
+
+# 海量评论系统
+
+    todo
+    像知乎这样的评论回复模式，数据库应该怎么设计比较好，考虑性能、可扩展性等？ - Syter的回答 - 知乎
+    https://www.zhihu.com/question/38959595/answer/79084228
+    
+    https://github.com/aylei/interview#%E4%B8%89%E9%9D%A2-2
+
+# 多活系统
+
+    todo
