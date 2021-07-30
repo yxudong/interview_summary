@@ -52,4 +52,11 @@
     todo
     https://www.modb.pro/db/40251
     https://zhuanlan.zhihu.com/p/115277009
-    https://www.cnblogs.com/henryhappier/archive/2010/07/05/1771295.html
+
+# 分库分表的区别
+
+    todo
+
+# 分区表和手动分表的区别，为什么不使用分区表
+
+    todo
